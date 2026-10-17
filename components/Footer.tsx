@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Logo from "./Logo";
-import { membershipPage, navPages } from "@/lib/pages";
+import { membershipPage, sitePages } from "@/lib/pages";
 
-const links = [...navPages, membershipPage];
+const links = [...sitePages, membershipPage];
 
 // TODO: Bytt ut med ekte e-post og sosiale medier.
 const contact = [

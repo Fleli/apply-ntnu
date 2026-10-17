@@ -56,11 +56,11 @@ export default function Home() {
 
       <section>
         <div className="container-x py-14 lg:py-20">
-          <div className="flex items-baseline justify-between gap-4">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
             <h2 className="text-2xl font-bold tracking-tight text-ink">
               Neste søknadskvelder
             </h2>
-            <Link href="/arrangementer" className="link text-sm">
+            <Link href="/arrangementer" className="link text-sm whitespace-nowrap">
               Alle arrangementer →
             </Link>
           </div>
