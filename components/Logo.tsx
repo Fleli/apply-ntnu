@@ -1,20 +1,20 @@
 import Link from "next/link";
 
 type LogoProps = {
-  /** Størrelse på logoen. "sm" i navbar, "lg" i footer/hero. */
+  /** "sm" i navbar og footer, "lg" der logoen skal stå alene. */
   size?: "sm" | "lg";
 };
 
 /**
- * Ordmerke i stil med «Linked[in]»: «Apply» i mørk tekst
- * etterfulgt av «NTNU» i en blå, avrundet boks.
+ * Logoen til Apply NTNU: «Apply» i blått, etterfulgt av «NTNU» i hvitt
+ * på en blå, avrundet boks. Tegnet i HTML/CSS så den er skarp i alle
+ * størrelser. Vektorversjon ligger i public/logo.svg.
  */
 export default function Logo({ size = "sm" }: LogoProps) {
-  const text = size === "sm" ? "text-[22px]" : "text-[30px]";
-  const badge =
+  const s =
     size === "sm"
-      ? "px-1.5 py-[3px] text-[12px]"
-      : "px-2 py-1 text-[15px]";
+      ? { text: "text-[22px]", badge: "h-[26px] rounded-[5px] px-2 text-[12px]" }
+      : { text: "text-[32px]", badge: "h-[38px] rounded-[7px] px-3 text-[17px]" };
 
   return (
     <Link
@@ -22,9 +22,11 @@ export default function Logo({ size = "sm" }: LogoProps) {
       aria-label="Apply NTNU – til forsiden"
       className="inline-flex items-center gap-1.5 select-none"
     >
-      <span className={`${text} font-bold tracking-tight text-ink`}>Apply</span>
+      <span className={`${s.text} font-bold leading-none tracking-tight text-brand`}>
+        Apply
+      </span>
       <span
-        className={`${badge} rounded-[4px] bg-brand font-extrabold uppercase leading-none tracking-wider text-white`}
+        className={`${s.badge} inline-flex items-center bg-brand font-extrabold uppercase leading-none tracking-wide text-white`}
       >
         NTNU
       </span>
