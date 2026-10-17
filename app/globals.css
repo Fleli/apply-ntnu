@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+/*
+  Designtokens inspirert av LinkedIn:
+  - Primærblå #0A66C2, mørkere ved hover #004182
+  - Varm lysegrå bakgrunn #F4F2EE med hvite kort
+  - 8px hjørneradius på kort, pilleformede knapper
+  - Systemfont-stack
+*/
+@theme {
+  --color-brand: #0a66c2;
+  --color-brand-dark: #004182;
+  --color-brand-light: #eaf3fc;
+  --color-brand-tint: #d7e8f7;
+
+  --color-page: #f4f2ee;
+  --color-surface: #ffffff;
+  --color-line: #e0dfdc;
+
+  --color-ink: rgba(0, 0, 0, 0.9);
+  --color-ink-soft: rgba(0, 0, 0, 0.6);
+  --color-ink-faint: rgba(0, 0, 0, 0.4);
+
+  --font-sans:
+    -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+
+  --radius-card: 0.5rem;
+  --shadow-card: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 3px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover:
+    0 0 0 1px rgba(0, 0, 0, 0.1), 0 6px 14px rgba(0, 0, 0, 0.1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-page text-ink font-sans antialiased;
+}
+
+/* Gjenbrukbare komponentklasser (registrert som utilities så de kan brukes med @apply) */
+@utility card {
+  @apply bg-surface rounded-card shadow-card;
+}
+
+@utility card-hover {
+  @apply transition-shadow duration-200 hover:shadow-card-hover;
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-base font-semibold leading-none transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand;
+}
+
+@utility btn-primary {
+  @apply btn bg-brand text-white hover:bg-brand-dark;
+}
+
+@utility btn-outline {
+  @apply btn border border-brand text-brand hover:bg-brand-light hover:border-brand-dark hover:text-brand-dark;
+}
+
+@utility btn-ghost {
+  @apply btn text-ink-soft hover:bg-black/5 hover:text-ink;
+}
+
+@utility container-x {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+}
+
+@utility eyebrow {
+  @apply text-sm font-semibold uppercase tracking-wide text-brand;
+}
