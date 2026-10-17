@@ -147,21 +147,22 @@ export function getEvent(slug: string): ApplyEvent | undefined {
 
 const nb = "nb-NO";
 
-/** «torsdag 22. oktober 2026» */
+/** «Torsdag 22. oktober 2026» – kun første bokstav stor, slik norsk skrives */
 export function formatLongDate(iso: string): string {
-  return new Intl.DateTimeFormat(nb, {
+  const s = new Intl.DateTimeFormat(nb, {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
   }).format(new Date(`${iso}T12:00:00`));
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-/** «22» */
+/** «22» (nb-NO gir «22.», vi fjerner punktumet i datoflisen) */
 export function formatDay(iso: string): string {
-  return new Intl.DateTimeFormat(nb, { day: "numeric" }).format(
-    new Date(`${iso}T12:00:00`),
-  );
+  return new Intl.DateTimeFormat(nb, { day: "numeric" })
+    .format(new Date(`${iso}T12:00:00`))
+    .replace(".", "");
 }
 
 /** «okt» */

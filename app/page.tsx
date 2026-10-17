@@ -183,7 +183,7 @@ export default function Home() {
                 <p className="mt-1 font-semibold leading-snug text-ink">
                   {next.title}
                 </p>
-                <p className="mt-1 text-sm capitalize text-ink-soft">
+                <p className="mt-1 text-sm text-ink-soft">
                   {formatLongDate(next.date)} · kl. {next.startTime}
                 </p>
                 <Link
