@@ -10,7 +10,7 @@ npm install
 npm run dev
 ```
 
-Siden kjører på [http://localhost:3000](http://localhost:3000).
+Terminalen viser hvilken port siden kjører på (vanligvis `http://localhost:3000`, eller neste ledige).
 
 ## Teknologi
 
