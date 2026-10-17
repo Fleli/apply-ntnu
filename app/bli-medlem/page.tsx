@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bell, Check, FileText, Users } from "lucide-react";
+import PageHeader from "@/components/PageHeader";
 import SignupForm from "@/components/SignupForm";
 import { getEvent, sortedEvents } from "@/lib/events";
 
@@ -42,18 +43,11 @@ export default async function BliMedlemPage({ searchParams }: Props) {
 
   return (
     <main className="flex-1">
-      <section className="border-b border-line bg-surface">
-        <div className="container-x py-12 lg:py-16">
-          <p className="eyebrow">Medlemskap</p>
-          <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
-            Bli medlem i Apply NTNU
-          </h1>
-          <p className="mt-4 max-w-2xl text-lg text-ink-soft">
-            Gratis, uforpliktende og åpent for alle NTNU-studenter. Du melder
-            deg av med ett klikk når du har fått jobben.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Medlemskap"
+        title="Bli medlem i Apply NTNU"
+        lead="Gratis, uforpliktende og åpent for alle NTNU-studenter. Du melder deg av med ett klikk når du har fått jobben."
+      />
 
       <section className="py-12 lg:py-16">
         <div className="container-x grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
