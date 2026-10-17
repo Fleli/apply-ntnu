@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Mail } from "lucide-react";
 import Logo from "./Logo";
+import { membershipPage, navPages } from "@/lib/pages";
 
 type IconProps = { className?: string };
 
@@ -24,12 +25,7 @@ function LinkedinIcon({ className }: IconProps) {
   );
 }
 
-const navLinks = [
-  { href: "/", label: "Hjem" },
-  { href: "/arrangementer", label: "Arrangementer" },
-  { href: "/om-oss", label: "Om oss" },
-  { href: "/bli-medlem", label: "Bli medlem" },
-];
+const navLinks = [...navPages, membershipPage];
 
 // TODO: Bytt ut med ekte e-post og sosiale medier.
 const contact = [
@@ -41,7 +37,7 @@ const contact = [
 export default function Footer() {
   return (
     <footer className="mt-auto border-t border-line bg-surface">
-      <div className="container-x grid gap-10 py-12 md:grid-cols-[2fr_1fr_1fr]">
+      <div className="container-x grid gap-10 py-12 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr]">
         <div className="max-w-sm">
           <Logo size="lg" />
           <p className="mt-4 text-sm leading-relaxed text-ink-soft">
@@ -52,7 +48,7 @@ export default function Footer() {
 
         <div>
           <h3 className="text-sm font-semibold text-ink">Sider</h3>
-          <ul className="mt-4 space-y-2.5">
+          <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 sm:grid-cols-1">
             {navLinks.map(({ href, label }) => (
               <li key={href}>
                 <Link

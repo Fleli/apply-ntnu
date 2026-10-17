@@ -3,14 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { CalendarDays, Home, Menu, Users, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Logo from "./Logo";
-
-const links = [
-  { href: "/", label: "Hjem", icon: Home },
-  { href: "/arrangementer", label: "Arrangementer", icon: CalendarDays },
-  { href: "/om-oss", label: "Om oss", icon: Users },
-];
+import { membershipPage, navPages } from "@/lib/pages";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -25,17 +20,15 @@ export default function Navbar() {
         <Logo />
 
         {/* Desktop-navigasjon: ikon over tekst, slik LinkedIn gjør det */}
-        <ul className="hidden items-stretch md:flex">
-          {links.map(({ href, label, icon: Icon }) => {
+        <ul className="hidden items-stretch lg:flex">
+          {navPages.map(({ href, label, icon: Icon }) => {
             const active = isActive(href);
             return (
               <li key={href}>
                 <Link
                   href={href}
-                  className={`relative flex h-[56px] min-w-[88px] flex-col items-center justify-center gap-0.5 px-3 text-xs transition-colors ${
-                    active
-                      ? "text-ink"
-                      : "text-ink-soft hover:text-ink"
+                  className={`relative flex h-[56px] min-w-[76px] flex-col items-center justify-center gap-0.5 px-2.5 text-xs whitespace-nowrap transition-colors ${
+                    active ? "text-ink" : "text-ink-soft hover:text-ink"
                   }`}
                 >
                   <Icon className="h-5 w-5" strokeWidth={active ? 2.25 : 2} />
@@ -48,29 +41,32 @@ export default function Navbar() {
             );
           })}
           <li className="ml-3 flex items-center">
-            <Link href="/bli-medlem" className="btn-primary px-4 py-2 text-sm">
-              Bli medlem
+            <Link
+              href={membershipPage.href}
+              className="btn-primary px-4 py-2 text-sm"
+            >
+              {membershipPage.label}
             </Link>
           </li>
         </ul>
 
-        {/* Mobil: hamburger */}
+        {/* Mobil og nettbrett: hamburger */}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls="mobilmeny"
           aria-label={open ? "Lukk meny" : "Åpne meny"}
-          className="btn-ghost -mr-2 px-2 py-2 md:hidden"
+          className="btn-ghost -mr-2 px-2 py-2 lg:hidden"
         >
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </nav>
 
       {open && (
-        <div id="mobilmeny" className="border-t border-line bg-surface md:hidden">
+        <div id="mobilmeny" className="border-t border-line bg-surface lg:hidden">
           <ul className="container-x flex flex-col py-2">
-            {links.map(({ href, label, icon: Icon }) => {
+            {navPages.map(({ href, label, icon: Icon }) => {
               const active = isActive(href);
               return (
                 <li key={href}>
@@ -91,11 +87,11 @@ export default function Navbar() {
             })}
             <li className="px-3 pb-2 pt-3">
               <Link
-                href="/bli-medlem"
+                href={membershipPage.href}
                 onClick={() => setOpen(false)}
                 className="btn-primary w-full"
               >
-                Bli medlem
+                {membershipPage.label}
               </Link>
             </li>
           </ul>
