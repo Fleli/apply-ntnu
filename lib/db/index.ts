@@ -26,7 +26,27 @@ export class DatabaseUnavailableError extends Error {
 const url = process.env.DATABASE_URL ?? "file:./data/apply.db";
 const authToken = process.env.DATABASE_AUTH_TOKEN || undefined;
 
-type Cache = { client?: Client; db?: Db; ready?: Promise<Db>; warned?: boolean };
+type Cache = {
+  client?: Client;
+  db?: Db;
+  ready?: Promise<Db>;
+  warned?: boolean;
+  /** mtime for migrasjonsjournalen da migrasjonene sist ble kjørt (kun i utvikling) */
+  journalMtime?: number;
+};
+
+const migrationsFolder = path.join(process.cwd(), "drizzle");
+
+/** I utvikling: har det kommet nye migrasjoner siden sist? */
+function journalChanged(): boolean {
+  if (process.env.NODE_ENV === "production") return false;
+  try {
+    const mtime = fs.statSync(path.join(migrationsFolder, "meta", "_journal.json")).mtimeMs;
+    return mtime !== cache.journalMtime;
+  } catch {
+    return false;
+  }
+}
 const g = globalThis as unknown as { __applyDb?: Cache };
 const cache = (g.__applyDb ??= {});
 
@@ -43,9 +63,14 @@ function connect(): Db {
 async function open(): Promise<Db> {
   try {
     const db = connect();
-    await migrate(db, {
-      migrationsFolder: path.join(process.cwd(), "drizzle"),
-    });
+    await migrate(db, { migrationsFolder });
+    try {
+      cache.journalMtime = fs.statSync(
+        path.join(migrationsFolder, "meta", "_journal.json"),
+      ).mtimeMs;
+    } catch {
+      /* ingen journal – ingenting å følge med på */
+    }
     return db;
   } catch (err) {
     if (!cache.warned) {
@@ -60,11 +85,13 @@ async function open(): Promise<Db> {
 }
 
 /**
- * Gir en tilkobling med migrasjoner kjørt, én gang per prosess.
+ * Gir en tilkobling med migrasjoner kjørt, én gang per prosess (i utvikling
+ * kjøres de på nytt når det kommer nye migrasjoner, uten omstart).
  * Kaster DatabaseUnavailableError hvis databasen ikke kan åpnes; da prøves
  * det på nytt ved neste kall.
  */
 export function ensureDb(): Promise<Db> {
+  if (cache.ready && journalChanged()) cache.ready = undefined;
   if (!cache.ready) {
     const attempt = open();
     cache.ready = attempt;
