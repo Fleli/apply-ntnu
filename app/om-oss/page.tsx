@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, HeartHandshake, Mail, Target, Users } from "lucide-react";
+import { ArrowRight, HeartHandshake, Target, Users } from "lucide-react";
+import CtaCard from "@/components/CtaCard";
+import NextPageLink from "@/components/NextPageLink";
+import PageHeader from "@/components/PageHeader";
 
 export const metadata: Metadata = {
   title: "Om oss",
@@ -36,47 +39,14 @@ const board = [
   { initials: "ØK", name: "Økonomi", role: "Økonomiansvarlig", study: "Studieprogram" },
 ];
 
-const faq = [
-  {
-    q: "Koster det noe å være medlem?",
-    a: "Nei. Medlemskap i Apply NTNU er gratis, og det samme er alle arrangementene våre. Vi dekker pizza og lokaler gjennom støtte og samarbeidspartnere.",
-  },
-  {
-    q: "Må jeg være medlem for å komme på en søknadskveld?",
-    a: "Nei, alle NTNU-studenter er velkomne. Men som medlem får du beskjed om nye arrangementer først, og tilgang til malene og ressursene våre.",
-  },
-  {
-    q: "Jeg har ikke CV enda. Kan jeg likevel komme?",
-    a: "Absolutt – det er nettopp da du bør komme. Vi har maler, eksempler og folk som gjerne hjelper deg med å lage en fra bunnen av.",
-  },
-  {
-    q: "Hvilke studieprogram er dette for?",
-    a: "Alle. De fleste medlemmene våre studerer teknologi, økonomi eller realfag, men søknadskveldene passer for alle som skal søke internship eller sommerjobb.",
-  },
-  {
-    q: "Hvordan kan jeg engasjere meg i styret?",
-    a: "Vi tar opp nye styremedlemmer hvert semester. Send oss en e-post eller ta en prat med en av oss på neste søknadskveld.",
-  },
-];
-
 export default function OmOssPage() {
   return (
     <main className="flex-1">
-      <section className="border-b border-line bg-surface">
-        <div className="container-x grid gap-10 py-12 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:py-20">
-          <div>
-            <p className="eyebrow">Om oss</p>
-            <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
-              Vi gjør jobbsøking til en lagsport
-            </h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-soft">
-              Apply NTNU er en studentorganisasjon ved NTNU i Trondheim. Vi
-              startet fordi vi var lei av å sitte alene med søknader som aldri
-              ble sendt – og fant ut at det ble både enklere og morsommere når
-              vi gjorde det sammen.
-            </p>
-          </div>
-
+      <PageHeader
+        eyebrow="Om oss"
+        title="Vi gjør jobbsøking til en lagsport"
+        lead="Apply NTNU er en studentorganisasjon ved NTNU i Trondheim. Vi startet fordi vi var lei av å sitte alene med søknader som aldri ble sendt – og fant ut at det ble både enklere og morsommere når vi gjorde det sammen."
+        aside={
           <div className="card p-6 sm:p-8">
             <h2 className="text-base font-semibold text-ink">Kort fortalt</h2>
             <dl className="mt-4 divide-y divide-line text-sm">
@@ -93,8 +63,8 @@ export default function OmOssPage() {
               ))}
             </dl>
           </div>
-        </div>
-      </section>
+        }
+      />
 
       <section className="py-16 lg:py-20">
         <div className="container-x">
@@ -153,58 +123,17 @@ export default function OmOssPage() {
       </section>
 
       <section className="py-16 lg:py-20">
-        <div className="container-x grid gap-10 lg:grid-cols-[1fr_2fr]">
-          <div>
-            <p className="eyebrow">Vanlige spørsmål</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-              Lurer du på noe?
-            </h2>
-            <p className="mt-4 text-ink-soft">
-              Finner du ikke svaret her, er det bare å sende oss en melding.
-            </p>
-            <a
-              href="mailto:post@applyntnu.no"
-              className="btn-outline mt-6 px-5 py-2.5 text-sm"
-            >
-              <Mail className="h-4 w-4" aria-hidden="true" />
-              Kontakt oss
-            </a>
-          </div>
-          <div className="card divide-y divide-line">
-            {faq.map(({ q, a }) => (
-              <details key={q} className="group px-6 py-4 open:bg-brand-light/40">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-ink marker:content-none">
-                  {q}
-                  <span className="shrink-0 text-brand transition-transform group-open:rotate-45 text-xl leading-none" aria-hidden="true">
-                    +
-                  </span>
-                </summary>
-                <p className="mt-3 text-sm leading-relaxed text-ink-soft">{a}</p>
-              </details>
-            ))}
-          </div>
+        <div className="container-x">
+          <CtaCard
+            title="Bli med på neste søknadskveld"
+            text="Enkleste måten å bli kjent med oss på er å møte opp. Ta med laptop – vi tar med pizza."
+            primary={{ href: "/arrangementer", label: "Se arrangementer" }}
+            secondary={{ href: "/sporsmal", label: "Vanlige spørsmål" }}
+          />
         </div>
       </section>
 
-      <section className="pb-20">
-        <div className="container-x">
-          <div className="card flex flex-col items-start gap-6 p-8 sm:p-12 md:flex-row md:items-center md:justify-between">
-            <div className="max-w-xl">
-              <h2 className="text-3xl font-bold tracking-tight text-ink">
-                Bli med på neste søknadskveld
-              </h2>
-              <p className="mt-3 text-lg text-ink-soft">
-                Enkleste måten å bli kjent med oss på er å møte opp. Ta med
-                laptop – vi tar med pizza.
-              </p>
-            </div>
-            <Link href="/arrangementer" className="btn-primary px-6 py-3">
-              Se arrangementer
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </div>
-        </div>
-      </section>
+      <NextPageLink current="/om-oss" />
     </main>
   );
 }
