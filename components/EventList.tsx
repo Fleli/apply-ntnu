@@ -2,11 +2,12 @@
 
 import { useMemo, useState } from "react";
 import EventRow from "./EventRow";
-import type { ApplyEvent, EventType } from "@/lib/events";
+import type { EventWithCount } from "@/lib/db/queries";
+import type { EventType } from "@/lib/db/schema";
 
 type Filter = "Alle" | EventType;
 
-export default function EventList({ events }: { events: ApplyEvent[] }) {
+export default function EventList({ events }: { events: EventWithCount[] }) {
   const [filter, setFilter] = useState<Filter>("Alle");
 
   const types = useMemo<Filter[]>(() => {

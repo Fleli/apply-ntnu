@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import SignupForm from "@/components/SignupForm";
-import { getEvent, sortedEvents } from "@/lib/events";
+import { getEventBySlug, listEvents } from "@/lib/db/queries";
 
 export const metadata: Metadata = {
   title: "Bli medlem",
@@ -30,12 +30,12 @@ type Props = {
 
 export default async function BliMedlemPage({ searchParams }: Props) {
   const { arrangement } = await searchParams;
-  const preselected = arrangement && getEvent(arrangement) ? arrangement : undefined;
-  const events = sortedEvents().map(({ slug, title, date }) => ({
-    slug,
-    title,
-    date,
-  }));
+  const [upcoming, chosen] = await Promise.all([
+    listEvents(),
+    arrangement ? getEventBySlug(arrangement) : undefined,
+  ]);
+  const events = upcoming.map(({ slug, title }) => ({ slug, title }));
+  const preselected = chosen?.slug;
 
   return (
     <main className="flex-1">

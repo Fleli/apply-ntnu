@@ -1,10 +1,10 @@
 import Link from "next/link";
 import CtaRow from "@/components/CtaRow";
 import EventRow from "@/components/EventRow";
-import { upcomingEvents } from "@/lib/events";
+import { listEvents } from "@/lib/db/queries";
 
-export default function Home() {
-  const events = upcomingEvents(3);
+export default async function Home() {
+  const events = await listEvents({ limit: 3 });
 
   return (
     <main className="flex-1">
@@ -60,15 +60,24 @@ export default function Home() {
             <h2 className="text-2xl font-bold tracking-tight text-ink">
               Neste søknadskvelder
             </h2>
-            <Link href="/arrangementer" className="link text-sm whitespace-nowrap">
-              Alle arrangementer →
-            </Link>
+            {events.length > 0 && (
+              <Link href="/arrangementer" className="link text-sm whitespace-nowrap">
+                Alle arrangementer →
+              </Link>
+            )}
           </div>
-          <ul className="mt-6">
-            {events.map((event) => (
-              <EventRow key={event.slug} event={event} compact />
-            ))}
-          </ul>
+          {events.length > 0 ? (
+            <ul className="mt-6">
+              {events.map((event) => (
+                <EventRow key={event.slug} event={event} compact />
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-4 max-w-xl text-ink-soft">
+              Ingen arrangementer er lagt ut ennå. Bli medlem, så får du beskjed
+              så snart neste søknadskveld er klar.
+            </p>
+          )}
         </div>
       </section>
 

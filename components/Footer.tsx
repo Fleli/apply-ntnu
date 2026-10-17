@@ -1,17 +1,18 @@
 import Link from "next/link";
 import Logo from "./Logo";
+import { getSettings } from "@/lib/db/queries";
 import { membershipPage, sitePages } from "@/lib/pages";
 
 const links = [...sitePages, membershipPage];
 
-// TODO: Bytt ut med ekte e-post og sosiale medier.
-const contact = [
-  { href: "mailto:post@applyntnu.no", label: "post@applyntnu.no" },
-  { href: "https://www.instagram.com/", label: "Instagram" },
-  { href: "https://www.linkedin.com/", label: "LinkedIn" },
-];
+export default async function Footer() {
+  const s = await getSettings();
+  const contact = [
+    s.contact_email && { href: `mailto:${s.contact_email}`, label: s.contact_email },
+    s.instagram_url && { href: s.instagram_url, label: "Instagram" },
+    s.linkedin_url && { href: s.linkedin_url, label: "LinkedIn" },
+  ].filter((c): c is { href: string; label: string } => Boolean(c));
 
-export default function Footer() {
   return (
     <footer className="mt-auto border-t border-line">
       <div className="container-x py-10">
@@ -35,19 +36,21 @@ export default function Footer() {
 
         <div className="mt-8 flex flex-col gap-2 border-t border-line pt-5 text-xs text-ink-faint sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Apply NTNU · Trondheim</p>
-          <p className="flex flex-wrap gap-x-4">
-            {contact.map(({ href, label }) => (
-              <a
-                key={href}
-                href={href}
-                target={href.startsWith("http") ? "_blank" : undefined}
-                rel={href.startsWith("http") ? "noreferrer" : undefined}
-                className="hover:text-ink"
-              >
-                {label}
-              </a>
-            ))}
-          </p>
+          {contact.length > 0 && (
+            <p className="flex flex-wrap gap-x-4">
+              {contact.map(({ href, label }) => (
+                <a
+                  key={href}
+                  href={href}
+                  target={href.startsWith("http") ? "_blank" : undefined}
+                  rel={href.startsWith("http") ? "noreferrer" : undefined}
+                  className="hover:text-ink"
+                >
+                  {label}
+                </a>
+              ))}
+            </p>
+          )}
         </div>
       </div>
     </footer>

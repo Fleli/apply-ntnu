@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ContactSentence from "@/components/ContactSentence";
 import CtaRow from "@/components/CtaRow";
 import EventList from "@/components/EventList";
 import PageHeader from "@/components/PageHeader";
-import { sortedEvents } from "@/lib/events";
+import { getSettings, listEvents } from "@/lib/db/queries";
 
 export const metadata: Metadata = {
   title: "Arrangementer",
@@ -11,8 +12,8 @@ export const metadata: Metadata = {
     "Alle søknadskvelder og workshops hos Apply NTNU dette semesteret. Gratis for alle NTNU-studenter.",
 };
 
-export default function ArrangementerPage() {
-  const events = sortedEvents();
+export default async function ArrangementerPage() {
+  const [events, settings] = await Promise.all([listEvents(), getSettings()]);
 
   return (
     <main className="flex-1">
@@ -30,14 +31,22 @@ export default function ArrangementerPage() {
             </Link>
             .
           </p>
-          <EventList events={events} />
-          <p className="mt-10 border-t border-line pt-6 text-sm text-ink-soft">
-            Har du forslag til et tema, en bransje eller en bedrift?{" "}
-            <a href="mailto:post@applyntnu.no" className="link">
-              Send oss en e-post
-            </a>
-            .
-          </p>
+
+          {events.length > 0 ? (
+            <EventList events={events} />
+          ) : (
+            <p className="max-w-xl text-lg text-ink-soft">
+              Ingen arrangementer er lagt ut ennå. Programmet for semesteret
+              kommer her så snart det er klart – medlemmer får beskjed først.
+            </p>
+          )}
+
+          <ContactSentence
+            email={settings.contact_email}
+            before="Har du forslag til et tema, en bransje eller en bedrift?"
+            label="Send oss en e-post"
+            className="mt-10 border-t border-line pt-6"
+          />
         </div>
       </section>
 

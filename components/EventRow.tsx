@@ -1,13 +1,9 @@
 import Link from "next/link";
-import {
-  type ApplyEvent,
-  formatDay,
-  formatMonthShort,
-  formatWeekdayShort,
-} from "@/lib/events";
+import { formatDay, formatMonthShort, formatWeekdayShort } from "@/lib/dates";
+import type { EventWithCount } from "@/lib/db/queries";
 
 type Props = {
-  event: ApplyEvent;
+  event: EventWithCount;
   /** Uten beskrivelse, brukes på forsiden */
   compact?: boolean;
 };

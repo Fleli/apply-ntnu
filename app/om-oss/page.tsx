@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import ContactSentence from "@/components/ContactSentence";
 import CtaRow from "@/components/CtaRow";
 import PageHeader from "@/components/PageHeader";
+import { getSettings, listBoard } from "@/lib/db/queries";
 
 export const metadata: Metadata = {
   title: "Om oss",
@@ -30,17 +32,9 @@ const values = [
   },
 ];
 
-// TODO: Plassholdere – legg inn ekte styremedlemmer.
-const board = [
-  ["Navn Navnesen", "Leder"],
-  ["Navn Navnesen", "Nestleder"],
-  ["Navn Navnesen", "Arrangementsansvarlig"],
-  ["Navn Navnesen", "Bedriftskontakt"],
-  ["Navn Navnesen", "Markedsansvarlig"],
-  ["Navn Navnesen", "Økonomiansvarlig"],
-];
+export default async function OmOssPage() {
+  const [board, settings] = await Promise.all([listBoard(), getSettings()]);
 
-export default function OmOssPage() {
   return (
     <main className="flex-1">
       <PageHeader
@@ -83,21 +77,29 @@ export default function OmOssPage() {
       <section>
         <div className="container-x py-14 lg:py-20">
           <h2 className="text-2xl font-bold tracking-tight text-ink">Styret</h2>
-          <ul className="mt-8 grid gap-x-10 gap-y-6 sm:grid-cols-2 md:grid-cols-3">
-            {board.map(([name, role]) => (
-              <li key={role}>
-                <p className="font-semibold text-ink">{name}</p>
-                <p className="text-sm text-ink-soft">{role}</p>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-10 border-t border-line pt-6 text-sm text-ink-soft">
-            Vil du være med i styret? Vi tar opp nye medlemmer hvert semester.{" "}
-            <a href="mailto:post@applyntnu.no" className="link">
-              Send oss en e-post
-            </a>
-            .
-          </p>
+          {board.length > 0 ? (
+            <ul className="mt-8 grid gap-x-10 gap-y-6 sm:grid-cols-2 md:grid-cols-3">
+              {board.map(({ id, name, role, studyProgram }) => (
+                <li key={id}>
+                  <p className="font-semibold text-ink">{name}</p>
+                  <p className="text-sm text-ink-soft">
+                    {role}
+                    {studyProgram ? ` · ${studyProgram}` : ""}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-4 max-w-xl text-ink-soft">
+              Styret for dette semesteret presenteres her snart.
+            </p>
+          )}
+          <ContactSentence
+            email={settings.contact_email}
+            before="Vil du være med i styret? Vi tar opp nye medlemmer hvert semester."
+            label="Send oss en e-post"
+            className="mt-10 border-t border-line pt-6"
+          />
         </div>
       </section>
 

@@ -12,6 +12,9 @@ export const metadata: Metadata = {
     "Apply NTNU er en studentorganisasjon ved NTNU som arrangerer søknadskvelder der studenter søker på internships og sommerjobber sammen.",
 };
 
+// Innholdet kommer fra databasen, så sidene rendres ved hver forespørsel.
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import ContactSentence from "@/components/ContactSentence";
 import CtaRow from "@/components/CtaRow";
 import PageHeader from "@/components/PageHeader";
+import { getSettings } from "@/lib/db/queries";
 
 export const metadata: Metadata = {
   title: "Vanlige spørsmål",
@@ -43,7 +45,9 @@ const faq = [
   },
 ];
 
-export default function SporsmalPage() {
+export default async function SporsmalPage() {
+  const settings = await getSettings();
+
   return (
     <main className="flex-1">
       <PageHeader
@@ -69,13 +73,13 @@ export default function SporsmalPage() {
               </details>
             ))}
           </div>
-          <p className="mt-6 text-sm text-ink-soft">
-            Fant du ikke svaret?{" "}
-            <a href="mailto:post@applyntnu.no" className="link">
-              Send oss en e-post
-            </a>
-            , eller spør oss på neste søknadskveld.
-          </p>
+          <ContactSentence
+            email={settings.contact_email}
+            before="Fant du ikke svaret?"
+            label="Send oss en e-post"
+            after="eller spør oss på neste søknadskveld"
+            className="mt-6"
+          />
         </div>
       </section>
 
