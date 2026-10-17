@@ -1,5 +1,6 @@
 "use server";
 
+import { DatabaseUnavailableError } from "@/lib/db";
 import {
   getEventBySlug,
   registerForEvent,
@@ -66,10 +67,13 @@ export async function registerMember(
 
     return { status: "ok", firstName: member.firstName, registration };
   } catch (err) {
-    console.error("Kunne ikke lagre medlem:", err);
+    const unavailable = err instanceof DatabaseUnavailableError;
+    if (!unavailable) console.error("Kunne ikke lagre medlem:", err);
     return {
       status: "error",
-      message: "Noe gikk galt da vi skulle lagre registreringen. Prøv igjen om litt.",
+      message: unavailable
+        ? "Registreringen er dessverre ikke tilgjengelig akkurat nå. Prøv igjen senere."
+        : "Noe gikk galt da vi skulle lagre registreringen. Prøv igjen om litt.",
       errors: {},
       values,
     };
