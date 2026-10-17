@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight, Mail } from "lucide-react";
-import NextPageLink from "@/components/NextPageLink";
+import CtaRow from "@/components/CtaRow";
 import PageHeader from "@/components/PageHeader";
 
 export const metadata: Metadata = {
@@ -29,7 +27,7 @@ const faq = [
   },
   {
     q: "Er jeg for tidlig ute i første eller andre klasse?",
-    a: "Nei. Mange bedrifter tar inn sommerstudenter allerede etter første eller andre år, og det er aldri for tidlig å lære seg å skrive en god søknad. Jo før du begynner, jo lettere blir det neste gang.",
+    a: "Nei. Mange bedrifter tar inn sommerstudenter allerede etter første eller andre år, og det er aldri for tidlig å lære seg å skrive en god søknad.",
   },
   {
     q: "Hva skjer hvis arrangementet er fullt?",
@@ -49,65 +47,44 @@ export default function SporsmalPage() {
   return (
     <main className="flex-1">
       <PageHeader
-        eyebrow="Vanlige spørsmål"
         title="Lurer du på noe?"
-        lead="Her er svarene på det folk oftest spør om før de kommer første gang. Finner du ikke svaret, er det bare å sende oss en melding."
+        lead="Her er svarene på det folk oftest spør om før de kommer første gang."
       />
 
-      <section className="py-12 lg:py-16">
-        <div className="container-x grid gap-8 lg:grid-cols-[1fr_320px]">
-          <div className="card divide-y divide-line">
+      <section>
+        <div className="container-x py-10 lg:py-14">
+          <div className="max-w-3xl divide-y divide-line border-b border-line">
             {faq.map(({ q, a }) => (
-              <details key={q} className="group px-6 py-4 open:bg-brand-light/40">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-ink marker:content-none">
+              <details key={q} className="group py-4">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-semibold text-ink marker:content-none">
                   {q}
                   <span
-                    className="shrink-0 text-xl leading-none text-brand transition-transform group-open:rotate-45"
+                    className="shrink-0 text-2xl font-light leading-none text-brand transition-transform group-open:rotate-45"
                     aria-hidden="true"
                   >
                     +
                   </span>
                 </summary>
-                <p className="mt-3 text-sm leading-relaxed text-ink-soft">{a}</p>
+                <p className="mt-3 max-w-2xl leading-relaxed text-ink-soft">{a}</p>
               </details>
             ))}
           </div>
-
-          <aside className="space-y-5 lg:sticky lg:top-[76px] lg:self-start">
-            <div className="card p-5">
-              <h2 className="text-base font-semibold text-ink">
-                Fant du ikke svaret?
-              </h2>
-              <p className="mt-3 text-sm text-ink-soft">
-                Send oss en e-post, så svarer vi så fort vi kan. Du kan også
-                spørre oss direkte på neste søknadskveld.
-              </p>
-              <a
-                href="mailto:post@applyntnu.no"
-                className="btn-outline mt-4 w-full px-4 py-2 text-sm"
-              >
-                <Mail className="h-4 w-4" aria-hidden="true" />
-                Kontakt oss
-              </a>
-            </div>
-
-            <div className="card p-5">
-              <h2 className="text-base font-semibold text-ink">
-                Vil du se hvordan en kveld foregår?
-              </h2>
-              <Link
-                href="/slik-fungerer-det"
-                className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand hover:underline"
-              >
-                Slik fungerer det
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </div>
-          </aside>
+          <p className="mt-6 text-sm text-ink-soft">
+            Fant du ikke svaret?{" "}
+            <a href="mailto:post@applyntnu.no" className="link">
+              Send oss en e-post
+            </a>
+            , eller spør oss på neste søknadskveld.
+          </p>
         </div>
       </section>
 
-      <NextPageLink current="/sporsmal" />
+      <CtaRow
+        title="Klar for å prøve?"
+        text="Medlemskap er gratis og tar under ett minutt."
+        href="/bli-medlem"
+        label="Bli medlem"
+      />
     </main>
   );
 }

@@ -2,7 +2,6 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
-import { CheckCircle2 } from "lucide-react";
 import type { ApplyEvent } from "@/lib/events";
 
 type Props = {
@@ -26,12 +25,8 @@ export default function SignupForm({ events, preselected }: Props) {
 
   if (submitted) {
     return (
-      <div className="card p-8 text-center sm:p-10">
-        <CheckCircle2
-          className="mx-auto h-14 w-14 text-brand"
-          aria-hidden="true"
-        />
-        <h2 className="mt-4 text-2xl font-bold text-ink">
+      <div className="card p-8 sm:p-10">
+        <h2 className="text-2xl font-bold text-ink">
           Velkommen{name ? `, ${name.split(" ")[0]}` : ""}!
         </h2>
         <p className="mt-3 text-ink-soft">
@@ -50,7 +45,7 @@ export default function SignupForm({ events, preselected }: Props) {
   const label = "block text-sm font-semibold text-ink";
 
   return (
-    <form onSubmit={handleSubmit} className="card p-6 sm:p-8" noValidate={false}>
+    <form onSubmit={handleSubmit} className="card p-6 sm:p-8">
       <h2 className="text-xl font-bold text-ink">Registrer deg</h2>
       <p className="mt-1 text-sm text-ink-soft">
         Tar under ett minutt. Felt merket med * er obligatoriske.

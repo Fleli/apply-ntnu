@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import EventCard from "./EventCard";
+import EventRow from "./EventRow";
 import type { ApplyEvent, EventType } from "@/lib/events";
 
 type Filter = "Alle" | EventType;
@@ -22,7 +22,7 @@ export default function EventList({ events }: { events: ApplyEvent[] }) {
       <div
         role="group"
         aria-label="Filtrer arrangementer etter type"
-        className="flex flex-wrap gap-2"
+        className="flex gap-6 border-b border-line text-sm"
       >
         {types.map((type) => {
           const active = type === filter;
@@ -32,10 +32,10 @@ export default function EventList({ events }: { events: ApplyEvent[] }) {
               type="button"
               onClick={() => setFilter(type)}
               aria-pressed={active}
-              className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors ${
+              className={`-mb-px border-b-2 pb-3 font-semibold transition-colors ${
                 active
-                  ? "border-brand bg-brand text-white"
-                  : "border-line bg-surface text-ink-soft hover:border-ink-soft hover:text-ink"
+                  ? "border-ink text-ink"
+                  : "border-transparent text-ink-soft hover:text-ink"
               }`}
             >
               {type}
@@ -44,17 +44,11 @@ export default function EventList({ events }: { events: ApplyEvent[] }) {
         })}
       </div>
 
-      <p className="mt-4 text-sm text-ink-soft">
-        {visible.length === 1
-          ? "1 arrangement"
-          : `${visible.length} arrangementer`}
-      </p>
-
-      <div className="mt-4 grid gap-5 lg:grid-cols-2">
+      <ul className="mt-2">
         {visible.map((event) => (
-          <EventCard key={event.slug} event={event} />
+          <EventRow key={event.slug} event={event} />
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
