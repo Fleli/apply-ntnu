@@ -5,7 +5,7 @@ import { saveProfile } from "@/app/account-actions";
 import { accountInput, accountLabel, initialAccountFormState, type AccountFormState } from "@/lib/account-forms";
 
 export function FieldError({ id, text }: { id: string; text?: string }) {
-  return text ? <p id={id} className="mt-1.5 text-sm text-red-700">{text}</p> : null;
+  return text ? <p id={id} className="mt-1.5 text-sm text-error">{text}</p> : null;
 }
 
 export function FormFeedback({ state }: { state: AccountFormState }) {
@@ -18,7 +18,7 @@ export function FormFeedback({ state }: { state: AccountFormState }) {
   const errors = [...new Set(Object.values(state.errors ?? {}))];
   return (
     <div ref={summary} tabIndex={-1} role={state.status === "error" ? "alert" : "status"}
-      className={`mt-5 rounded-md border px-4 py-3 text-sm focus:outline-2 focus:outline-offset-2 ${state.status === "error" ? "border-red-200 bg-red-50 text-red-800 focus:outline-red-600" : "border-brand/20 bg-brand-light text-brand focus:outline-brand"}`}>
+      className={`mt-5 rounded-md border px-4 py-3 text-sm focus:outline-2 focus:outline-offset-2 ${state.status === "error" ? "border-error-line bg-error-surface text-error-strong focus:outline-error-focus" : "border-brand/20 bg-brand-light text-brand focus:outline-brand"}`}>
       <p>{state.message ?? (state.status === "error" ? "Se over feltene og prøv igjen." : "Endringene er lagret.")}</p>
       {errors.length > 0 && <ul className="mt-2 list-disc space-y-1 pl-5">{errors.map((error) => <li key={error}>{error}</li>)}</ul>}
     </div>
@@ -101,7 +101,7 @@ export default function ProfileForm({ account }: Props) {
         </div>
         <div>
           <label htmlFor="profile-email" className={accountLabel}>E-post</label>
-          <input id="profile-email" type="email" autoComplete="email" readOnly value={account.email} aria-describedby="profile-email-help" className={`${accountInput()} bg-black/3 text-ink-soft`} />
+          <input id="profile-email" type="email" autoComplete="email" readOnly value={account.email} aria-describedby="profile-email-help" className={`${accountInput()} read-only:bg-readonly text-ink-soft`} />
           <p id="profile-email-help" className="mt-1.5 text-xs text-ink-soft">E-postadressen kan foreløpig ikke endres.</p>
         </div>
         <div>

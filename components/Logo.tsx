@@ -26,7 +26,7 @@ export default function Logo({ size = "sm" }: LogoProps) {
         Apply
       </span>
       <span
-        className={`${s.badge} inline-flex items-center bg-brand font-extrabold uppercase leading-none tracking-wide text-white`}
+        className={`${s.badge} inline-flex items-center bg-brand-fill font-extrabold uppercase leading-none tracking-wide text-on-brand`}
       >
         NTNU
       </span>

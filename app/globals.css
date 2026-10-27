@@ -10,19 +10,74 @@
   --color-brand: #0a66c2;
   --color-brand-dark: #004182;
   --color-brand-light: #eaf3fc;
+  --color-brand-fill: #0a66c2;
+  --color-brand-fill-hover: #004182;
+  --color-on-brand: #ffffff;
 
   --color-surface: #ffffff;
   --color-line: #e6e6e4;
+  --color-hover: rgba(0, 0, 0, 0.05);
+  --color-readonly: rgba(0, 0, 0, 0.03);
 
   --color-ink: rgba(0, 0, 0, 0.9);
   --color-ink-soft: rgba(0, 0, 0, 0.6);
   --color-ink-faint: rgba(0, 0, 0, 0.4);
+  --color-error: var(--color-red-700);
+  --color-error-strong: var(--color-red-800);
+  --color-error-surface: var(--color-red-50);
+  --color-error-line: var(--color-red-200);
+  --color-error-focus: var(--color-red-600);
 
   --font-sans:
     -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
     sans-serif;
 
   --radius-card: 0.5rem;
+}
+
+:root {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-brand: #71b7ff;
+  --color-brand-dark: #a4d1ff;
+  --color-brand-light: #172f49;
+  --color-surface: #111b29;
+  --color-line: #344257;
+  --color-hover: #223044;
+  --color-readonly: #202b3a;
+  --color-ink: #f1f5f9;
+  --color-ink-soft: #b5c2d3;
+  --color-ink-faint: #93a4b9;
+  --color-error: #fca5a5;
+  --color-error-strong: #fecaca;
+  --color-error-surface: #351e29;
+  --color-error-line: #75404b;
+  --color-error-focus: #f87171;
+}
+
+/* Follow the device theme before JavaScript loads, or when it is disabled. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --color-brand: #71b7ff;
+    --color-brand-dark: #a4d1ff;
+    --color-brand-light: #172f49;
+    --color-surface: #111b29;
+    --color-line: #344257;
+    --color-hover: #223044;
+    --color-readonly: #202b3a;
+    --color-ink: #f1f5f9;
+    --color-ink-soft: #b5c2d3;
+    --color-ink-faint: #93a4b9;
+    --color-error: #fca5a5;
+    --color-error-strong: #fecaca;
+    --color-error-surface: #351e29;
+    --color-error-line: #75404b;
+    --color-error-focus: #f87171;
+  }
 }
 
 html {
@@ -43,7 +98,7 @@ body {
 }
 
 @utility btn-primary {
-  @apply btn bg-brand text-white hover:bg-brand-dark;
+  @apply btn bg-brand-fill text-on-brand hover:bg-brand-fill-hover;
 }
 
 @utility btn-outline {
@@ -51,7 +106,7 @@ body {
 }
 
 @utility btn-ghost {
-  @apply btn text-ink-soft hover:bg-black/5 hover:text-ink;
+  @apply btn text-ink-soft hover:bg-hover hover:text-ink;
 }
 
 @utility container-x {

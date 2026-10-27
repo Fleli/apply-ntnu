@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { headers } from "next/headers";
 import { getAccount } from "@/lib/account";
+import { themeInitScript } from "@/lib/theme";
 
 export const metadata: Metadata = {
   title: {
@@ -24,7 +25,10 @@ export default async function RootLayout({
   // Protected pages perform their own session checks and fail closed.
   const account = await getAccount(new Headers(await headers())).catch(() => null);
   return (
-    <html lang="nb" data-scroll-behavior="smooth">
+    <html lang="nb" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="flex min-h-screen flex-col">
         <Navbar account={account ? { name: account.name, image: account.image } : null} />
         {children}

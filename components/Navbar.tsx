@@ -7,6 +7,7 @@ import { useFormStatus } from "react-dom";
 import { Menu, UserRound, X } from "lucide-react";
 import { logOut } from "@/app/account-actions";
 import Logo from "./Logo";
+import ThemeToggle from "./ThemeToggle";
 import { membershipPage, navPages } from "@/lib/pages";
 
 type Props = { account?: { name: string; image: string | null } | null };
@@ -32,9 +33,9 @@ export default function Navbar({ account }: Props) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-surface">
-      <nav aria-label="Hovedmeny" className="container-x flex h-[56px] items-center justify-between gap-3">
+      <nav aria-label="Hovedmeny" className="container-x flex h-[56px] max-w-6xl items-center justify-between gap-3">
         <Logo />
-        <ul className="hidden items-stretch lg:flex">
+        <ul className="ml-auto hidden items-stretch xl:flex">
           {navPages.map(({ href, label, icon: Icon }) => {
             const active = isActive(href);
             return <li key={href}>
@@ -56,26 +57,29 @@ export default function Navbar({ account }: Props) {
             <li className="ml-1 flex items-center"><Link href={membershipPage.href} className="btn-primary px-4 py-2 text-sm whitespace-nowrap">{membershipPage.label}</Link></li>
           </>}
         </ul>
-        <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-controls="mobilmeny" aria-label={open ? "Lukk meny" : "Åpne meny"} className="btn-ghost -mr-2 px-2 py-2 lg:hidden">
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        <div className="ml-auto flex shrink-0 items-center gap-1 xl:ml-0">
+          <ThemeToggle />
+          <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-controls="mobilmeny" aria-label={open ? "Lukk meny" : "Åpne meny"} className="btn-ghost -mr-2 px-2 py-2 xl:hidden">
+            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </nav>
-      {open && <div id="mobilmeny" className="border-t border-line bg-surface lg:hidden">
+      {open && <div id="mobilmeny" className="border-t border-line bg-surface xl:hidden">
         <ul className="container-x flex max-h-[calc(100dvh-56px)] flex-col overflow-y-auto py-2">
           {navPages.map(({ href, label, icon: Icon }) => {
             const active = isActive(href);
             return <li key={href}>
               <Link href={href} onClick={() => setOpen(false)} aria-current={active ? "page" : undefined}
-                className={`flex items-center gap-3 rounded-md px-3 py-3 text-base ${active ? "bg-brand-light font-semibold text-brand" : "text-ink hover:bg-black/5"}`}>
+                className={`flex items-center gap-3 rounded-md px-3 py-3 text-base ${active ? "bg-brand-light font-semibold text-brand" : "text-ink hover:bg-hover"}`}>
                 <Icon className="h-5 w-5" aria-hidden="true" />{label}
               </Link>
             </li>;
           })}
           {account ? <>
-            <li className="mt-2 border-t border-line pt-2"><Link href="/min-side" onClick={() => setOpen(false)} aria-current={isActive("/min-side") ? "page" : undefined} className={`flex items-center gap-3 rounded-md px-3 py-3 ${isActive("/min-side") ? "bg-brand-light font-semibold text-brand" : "text-ink hover:bg-black/5"}`}>{avatar}Min side</Link></li>
+            <li className="mt-2 border-t border-line pt-2"><Link href="/min-side" onClick={() => setOpen(false)} aria-current={isActive("/min-side") ? "page" : undefined} className={`flex items-center gap-3 rounded-md px-3 py-3 ${isActive("/min-side") ? "bg-brand-light font-semibold text-brand" : "text-ink hover:bg-hover"}`}>{avatar}Min side</Link></li>
             <li><form action={mobileLogout}><LogoutButton mobile /></form></li>
           </> : <>
-            <li className="mt-2 border-t border-line pt-2"><Link href="/logg-inn" onClick={() => setOpen(false)} className="flex rounded-md px-3 py-3 text-ink hover:bg-black/5">Logg inn</Link></li>
+            <li className="mt-2 border-t border-line pt-2"><Link href="/logg-inn" onClick={() => setOpen(false)} className="flex rounded-md px-3 py-3 text-ink hover:bg-hover">Logg inn</Link></li>
             <li className="px-3 pb-2 pt-2"><Link href={membershipPage.href} onClick={() => setOpen(false)} className="btn-primary w-full">{membershipPage.label}</Link></li>
           </>}
         </ul>
