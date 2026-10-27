@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  blob,
   integer,
   sqliteTable,
   text,
@@ -34,8 +35,9 @@ export const members = sqliteTable("members", {
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   email: text("email").notNull().unique(),
-  studyProgram: text("study_program").notNull(),
-  year: text("year").notNull(),
+  studyProgram: text("study_program"),
+  year: text("year"),
+  userId: text("user_id").unique().references(() => users.id, { onDelete: "cascade" }),
   consentAt: text("consent_at").notNull().default(sql`(current_timestamp)`),
   createdAt: text("created_at").notNull().default(sql`(current_timestamp)`),
 });
@@ -99,3 +101,49 @@ export type Member = typeof members.$inferSelect;
 export type Registration = typeof registrations.$inferSelect;
 export type BoardMember = typeof boardMembers.$inferSelect;
 export type Testimonial = typeof testimonials.$inferSelect;
+
+/** Better Auth owns credentials and persistent sessions. */
+export const users = sqliteTable("auth_user", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  emailVerified: integer("email_verified", { mode: "boolean" }).notNull().default(false),
+  image: text("image"),
+  phone: text("phone"),
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+});
+export const sessions = sqliteTable("auth_session", {
+  id: text("id").primaryKey(),
+  expiresAt: integer("expires_at", { mode: "timestamp_ms" }).notNull(),
+  token: text("token").notNull().unique(),
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+  ipAddress: text("ip_address"), userAgent: text("user_agent"),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+});
+export const accounts = sqliteTable("auth_account", {
+  id: text("id").primaryKey(), accountId: text("account_id").notNull(), providerId: text("provider_id").notNull(),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  accessToken: text("access_token"), refreshToken: text("refresh_token"), idToken: text("id_token"),
+  accessTokenExpiresAt: integer("access_token_expires_at", { mode: "timestamp_ms" }),
+  refreshTokenExpiresAt: integer("refresh_token_expires_at", { mode: "timestamp_ms" }),
+  scope: text("scope"), password: text("password"),
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+});
+export const verifications = sqliteTable("auth_verification", {
+  id: text("id").primaryKey(), identifier: text("identifier").notNull(), value: text("value").notNull(),
+  expiresAt: integer("expires_at", { mode: "timestamp_ms" }).notNull(),
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+});
+export const rateLimits = sqliteTable("auth_rate_limit", {
+  id: text("id").primaryKey(), key: text("key").notNull().unique(),
+  count: integer("count").notNull(), lastRequest: integer("last_request").notNull(),
+});
+export const profileImages = sqliteTable("profile_images", {
+  userId: text("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
+  data: blob("data", { mode: "buffer" }).notNull(), mimeType: text("mime_type").notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+});

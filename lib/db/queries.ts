@@ -18,7 +18,6 @@ import {
   settings,
   testimonials,
   type Event,
-  type RegistrationStatus,
 } from "./schema";
 
 export type EventWithCount = Event & { registered: number };
@@ -111,68 +110,5 @@ export function getStats() {
       .where(eq(registrations.status, "påmeldt")),
     ]);
     return { members: m.n, events: e.n, registrations: r.n };
-  });
-}
-
-/** Oppretter et medlem, eller oppdaterer opplysningene hvis e-posten finnes fra før. */
-export async function upsertMember(input: {
-  firstName: string;
-  lastName: string;
-  email: string;
-  studyProgram: string;
-  year: string;
-}) {
-  const db = await ensureDb();
-  const [row] = await db
-    .insert(members)
-    .values(input)
-    .onConflictDoUpdate({
-      target: members.email,
-      set: {
-        firstName: input.firstName,
-        lastName: input.lastName,
-        studyProgram: input.studyProgram,
-        year: input.year,
-      },
-    })
-    .returning();
-  return row;
-}
-
-/**
- * Melder et medlem på et arrangement. Returnerer «påmeldt» eller
- * «venteliste», avhengig av om det er plass. Idempotent per medlem.
- */
-export async function registerForEvent(
-  memberId: number,
-  eventId: number,
-  spots: number,
-): Promise<RegistrationStatus> {
-  const db = await ensureDb();
-  return db.transaction(async (tx) => {
-    const [existing] = await tx
-      .select()
-      .from(registrations)
-      .where(
-        and(
-          eq(registrations.eventId, eventId),
-          eq(registrations.memberId, memberId),
-        ),
-      )
-      .limit(1);
-    if (existing) return existing.status;
-
-    const [{ n }] = await tx
-      .select({ n: count() })
-      .from(registrations)
-      .where(
-        and(
-          eq(registrations.eventId, eventId),
-          eq(registrations.status, "påmeldt"),
-        ),
-      );
-    const status: RegistrationStatus = n >= spots ? "venteliste" : "påmeldt";
-    await tx.insert(registrations).values({ eventId, memberId, status });
-    return status;
   });
 }

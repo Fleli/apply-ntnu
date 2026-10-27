@@ -1,162 +1,78 @@
 "use client";
 
 import Link from "next/link";
-import { startTransition, useActionState, type FormEvent } from "react";
-import { registerMember } from "@/app/bli-medlem/actions";
-import { years, type SignupState } from "@/lib/signup";
+import { startTransition, useActionState, useState, type FormEvent } from "react";
+import { signUp } from "@/app/account-actions";
+import { accountInput, accountLabel, initialAccountFormState } from "@/lib/account-forms";
+import { AvatarInput, FieldError, FormFeedback } from "./ProfileForm";
 
-type Props = {
-  events: { slug: string; title: string }[];
-  /** Forvalgt arrangement fra ?arrangement=slug */
-  preselected?: string;
-};
-
-const initial: SignupState = { status: "idle" };
+type Props = { events: { slug: string; title: string }[]; preselected?: string };
 
 export default function SignupForm({ events, preselected }: Props) {
-  const [state, submit, pending] = useActionState(registerMember, initial);
-
-  // Vi kaller action manuelt i stedet for <form action>, slik at React ikke
-  // nullstiller feltene når valideringen feiler.
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
+  const [state, submit, pending] = useActionState(signUp, initialAccountFormState);
+  const errors = state.errors ?? {};
+  const [eventSlug, setEventSlug] = useState(preselected ?? "");
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const avatar = event.currentTarget.querySelector<HTMLInputElement>('input[name="avatar"]');
+    if (avatar && !avatar.validity.valid) { avatar.reportValidity(); return; }
+    const data = new FormData(event.currentTarget);
     startTransition(() => submit(data));
   }
-
-  if (state.status === "ok") {
-    const reg = state.registration;
-    return (
-      <div className="card p-8 sm:p-10">
-        <h2 className="text-2xl font-bold text-ink">Velkommen, {state.firstName}!</h2>
-        <p className="mt-3 leading-relaxed text-ink-soft">
-          Du er nå registrert som medlem i Apply NTNU.
-          {reg?.status === "påmeldt" && (
-            <> Du er også meldt på <strong className="text-ink">{reg.eventTitle}</strong>.</>
-          )}
-          {reg?.status === "venteliste" && (
-            <>
-              {" "}
-              <strong className="text-ink">{reg.eventTitle}</strong> er fullt, så du
-              står på venteliste. Vi sender e-post hvis det blir ledig plass.
-            </>
-          )}
-        </p>
-        <Link href="/arrangementer" className="btn-primary mt-6 px-6 py-3">
-          Se arrangementer
-        </Link>
-      </div>
-    );
-  }
-
-  const values = state.status === "error" ? state.values : undefined;
-  const errors = state.status === "error" ? state.errors : {};
-
-  const label = "block text-sm font-semibold text-ink";
-  const input = (bad?: string) =>
-    `mt-1.5 block w-full rounded-md border bg-surface px-3 py-2.5 text-base text-ink placeholder:text-ink-faint focus:outline-2 focus:outline-offset-0 ${
-      bad
-        ? "border-red-600 focus:border-red-600 focus:outline-red-600/30"
-        : "border-line focus:border-brand focus:outline-brand/40"
-    }`;
-  const Err = ({ id, text }: { id: string; text?: string }) =>
-    text ? (
-      <p id={id} className="mt-1.5 text-sm text-red-700">
-        {text}
-      </p>
-    ) : null;
-
+  if (state.status === "ok") return (
+    <div className="card p-6 sm:p-8">
+      <h2 className="text-2xl font-bold text-ink">Velkommen til Apply NTNU!</h2>
+      <FormFeedback state={state} />
+      <Link href="/min-side" className="btn-primary mt-6 px-6 py-3">Gå til Min side</Link>
+    </div>
+  );
+  const loginHref = eventSlug ? `/logg-inn?arrangement=${encodeURIComponent(eventSlug)}` : "/logg-inn";
   return (
-    <form onSubmit={onSubmit} noValidate className="card p-6 sm:p-8">
-      <h2 className="text-xl font-bold text-ink">Registrer deg</h2>
-      <p className="mt-1 text-sm text-ink-soft">
-        Tar under ett minutt. Felt merket med * er obligatoriske.
-      </p>
-
-      {state.status === "error" && state.message && (
-        <p role="alert" className="mt-5 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-          {state.message}
-        </p>
-      )}
-
-      <div className="mt-6 grid gap-5 sm:grid-cols-2">
+    <form onSubmit={onSubmit} noValidate aria-busy={pending} className="card p-6 sm:p-8">
+      <h2 className="text-xl font-bold text-ink">Opprett konto</h2>
+      <p className="mt-1 text-sm text-ink-soft">Gratis medlemskap. Felt merket med * er obligatoriske.</p>
+      <FormFeedback state={state} />
+      <fieldset disabled={pending} className="mt-6 space-y-5">
         <div>
-          <label htmlFor="fornavn" className={label}>Fornavn *</label>
-          <input id="fornavn" name="fornavn" type="text" autoComplete="given-name" required
-            defaultValue={values?.firstName} aria-invalid={!!errors.firstName}
-            aria-describedby={errors.firstName ? "fornavn-feil" : undefined} className={input(errors.firstName)} />
-          <Err id="fornavn-feil" text={errors.firstName} />
+          <label htmlFor="signup-name" className={accountLabel}>Navn *</label>
+          <input id="signup-name" name="name" autoComplete="name" required maxLength={120} defaultValue={state.values?.name}
+            aria-invalid={!!errors.name} aria-describedby={errors.name ? "signup-name-error" : undefined} className={accountInput(errors.name)} />
+          <FieldError id="signup-name-error" text={errors.name} />
         </div>
         <div>
-          <label htmlFor="etternavn" className={label}>Etternavn *</label>
-          <input id="etternavn" name="etternavn" type="text" autoComplete="family-name" required
-            defaultValue={values?.lastName} aria-invalid={!!errors.lastName}
-            aria-describedby={errors.lastName ? "etternavn-feil" : undefined} className={input(errors.lastName)} />
-          <Err id="etternavn-feil" text={errors.lastName} />
-        </div>
-      </div>
-
-      <div className="mt-5">
-        <label htmlFor="epost" className={label}>E-post *</label>
-        <input id="epost" name="epost" type="email" autoComplete="email" required placeholder="navn@stud.ntnu.no"
-          defaultValue={values?.email} aria-invalid={!!errors.email}
-          aria-describedby={errors.email ? "epost-feil" : "epost-hjelp"} className={input(errors.email)} />
-        <Err id="epost-feil" text={errors.email} />
-        <p id="epost-hjelp" className="mt-1.5 text-xs text-ink-soft">
-          Bruk gjerne NTNU-adressen din, men det er ikke et krav.
-        </p>
-      </div>
-
-      <div className="mt-5 grid gap-5 sm:grid-cols-[1fr_140px]">
-        <div>
-          <label htmlFor="studie" className={label}>Studieprogram *</label>
-          <input id="studie" name="studie" type="text" required placeholder="F.eks. Datateknologi"
-            defaultValue={values?.studyProgram} aria-invalid={!!errors.studyProgram}
-            aria-describedby={errors.studyProgram ? "studie-feil" : undefined} className={input(errors.studyProgram)} />
-          <Err id="studie-feil" text={errors.studyProgram} />
+          <label htmlFor="signup-email" className={accountLabel}>E-post *</label>
+          <input id="signup-email" name="email" type="email" autoComplete="email" required maxLength={254} placeholder="navn@stud.ntnu.no" defaultValue={state.values?.email}
+            aria-invalid={!!errors.email} aria-describedby={`signup-email-help${errors.email ? " signup-email-error" : ""}`} className={accountInput(errors.email)} />
+          <FieldError id="signup-email-error" text={errors.email} />
+          <p id="signup-email-help" className="mt-1.5 text-xs text-ink-soft">Bruk gjerne NTNU-adressen din, men det er ikke et krav.</p>
         </div>
         <div>
-          <label htmlFor="aar" className={label}>Årstrinn *</label>
-          <select id="aar" name="aar" required defaultValue={values?.year ?? ""} aria-invalid={!!errors.year}
-            aria-describedby={errors.year ? "aar-feil" : undefined} className={input(errors.year)}>
-            <option value="" disabled>Velg</option>
-            {years.map((y) => (
-              <option key={y} value={y}>{y}</option>
-            ))}
+          <label htmlFor="signup-password" className={accountLabel}>Passord *</label>
+          <input id="signup-password" name="password" type="password" autoComplete="new-password" required minLength={12} maxLength={128}
+            aria-invalid={!!errors.password} aria-describedby={`signup-password-help${errors.password ? " signup-password-error" : ""}`} className={accountInput(errors.password)} />
+          <p id="signup-password-help" className="mt-1.5 text-xs text-ink-soft">Bruk mellom 12 og 128 tegn. Du kan gjerne bruke en lang passordfrase.</p>
+          <FieldError id="signup-password-error" text={errors.password} />
+        </div>
+        <div className="border-t border-line pt-5">
+          <label htmlFor="signup-phone" className={accountLabel}>Telefon <span className="font-normal text-ink-soft">(valgfritt)</span></label>
+          <input id="signup-phone" name="phone" type="tel" autoComplete="tel" maxLength={40} defaultValue={state.values?.phone}
+            aria-invalid={!!errors.phone} aria-describedby={errors.phone ? "signup-phone-error" : undefined} className={accountInput(errors.phone)} />
+          <FieldError id="signup-phone-error" text={errors.phone} />
+        </div>
+        <AvatarInput error={errors.avatar} disabled={pending} />
+        {events.length > 0 ? <div className="border-t border-line pt-5">
+          <label htmlFor="signup-event" className={accountLabel}>Meld deg på et arrangement samtidig <span className="font-normal text-ink-soft">(valgfritt)</span></label>
+          <select id="signup-event" name="eventSlug" value={eventSlug} onChange={(event) => setEventSlug(event.target.value)}
+            aria-invalid={!!errors.eventSlug} aria-describedby={errors.eventSlug ? "signup-event-error" : undefined} className={accountInput(errors.eventSlug)}>
+            <option value="">Bare medlemskap foreløpig</option>
+            {events.map((event) => <option key={event.slug} value={event.slug}>{event.title}</option>)}
           </select>
-          <Err id="aar-feil" text={errors.year} />
-        </div>
-      </div>
-
-      {events.length > 0 && (
-        <div className="mt-5">
-          <label htmlFor="arrangement" className={label}>
-            Vil du melde deg på et arrangement samtidig?
-          </label>
-          <select id="arrangement" name="arrangement" defaultValue={values?.eventSlug ?? preselected ?? ""}
-            aria-invalid={!!errors.eventSlug} className={input(errors.eventSlug)}>
-            <option value="">Nei, bare medlemskap</option>
-            {events.map((e) => (
-              <option key={e.slug} value={e.slug}>{e.title}</option>
-            ))}
-          </select>
-          <Err id="arrangement-feil" text={errors.eventSlug} />
-        </div>
-      )}
-
-      <label className="mt-6 flex items-start gap-3 text-sm text-ink-soft">
-        <input type="checkbox" name="samtykke" required aria-invalid={!!errors.consent}
-          className="mt-0.5 h-4 w-4 shrink-0 rounded border-line accent-brand" />
-        <span>
-          Jeg samtykker til at Apply NTNU lagrer opplysningene mine for å sende
-          meg informasjon om arrangementer. Du kan melde deg av når som helst. *
-        </span>
-      </label>
-      <Err id="samtykke-feil" text={errors.consent} />
-
-      <button type="submit" disabled={pending} className="btn-primary mt-6 w-full px-6 py-3 disabled:opacity-60">
-        {pending ? "Sender …" : "Bli medlem"}
-      </button>
+          <FieldError id="signup-event-error" text={errors.eventSlug} />
+        </div> : <input type="hidden" name="eventSlug" value={preselected ?? ""} />}
+      </fieldset>
+      <p className="mt-6 text-xs leading-relaxed text-ink-soft">Vi lagrer opplysningene dine for å administrere medlemskapet og påmeldingene dine. Profilbildet og telefonnummeret ditt er private.</p>
+      <button type="submit" disabled={pending} className="btn-primary mt-5 w-full px-6 py-3 disabled:opacity-60">{pending ? "Oppretter konto …" : "Bli medlem"}</button>
+      <p className="mt-5 text-center text-sm text-ink-soft">Har du allerede konto? <Link href={loginHref} className="link">Logg inn</Link></p>
     </form>
   );
 }

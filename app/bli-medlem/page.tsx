@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import SignupForm from "@/components/SignupForm";
-import { getEventBySlug, listEvents } from "@/lib/db/queries";
+import { listEvents } from "@/lib/db/queries";
+import { headers } from "next/headers";
+import Link from "next/link";
+import { getAccount } from "@/lib/account";
 
 export const metadata: Metadata = {
   title: "Bli medlem",
@@ -30,10 +33,11 @@ type Props = {
 
 export default async function BliMedlemPage({ searchParams }: Props) {
   const { arrangement } = await searchParams;
-  const [upcoming, chosen] = await Promise.all([
+  const [upcoming, account] = await Promise.all([
     listEvents(),
-    arrangement ? getEventBySlug(arrangement) : undefined,
+    getAccount(new Headers(await headers())),
   ]);
+  const chosen = upcoming.find((event) => event.slug === arrangement);
   const events = upcoming.map(({ slug, title }) => ({ slug, title }));
   const preselected = chosen?.slug;
 
@@ -41,7 +45,7 @@ export default async function BliMedlemPage({ searchParams }: Props) {
     <main className="flex-1">
       <PageHeader
         title="Bli medlem i Apply NTNU"
-        lead="Gratis, uforpliktende og åpent for alle NTNU-studenter. Du melder deg av med ett klikk når du har fått jobben."
+        lead="Gratis, uforpliktende og åpent for alle NTNU-studenter. Opprett en konto og bli med i fellesskapet."
       />
 
       <section>
@@ -66,7 +70,14 @@ export default async function BliMedlemPage({ searchParams }: Props) {
             </p>
           </div>
 
-          <SignupForm events={events} preselected={preselected} />
+          {account ? (
+            <div className="card bg-surface p-6 sm:p-8">
+              <h2 className="text-2xl font-bold text-ink">Du er allerede medlem</h2>
+              <p className="mt-3 text-ink-soft">Du er logget inn som {account.name}. På Min side kan du endre profilen din og se påmeldingene dine.</p>
+              {chosen && <p className="mt-3 text-ink-soft">Bekreft påmelding til {chosen.title} på Min side.</p>}
+              <Link href={`/min-side${preselected ? `?arrangement=${encodeURIComponent(preselected)}` : ""}`} className="btn-primary mt-6 inline-flex px-6 py-3">Åpne Min side</Link>
+            </div>
+          ) : <SignupForm events={events} preselected={preselected} />}
         </div>
       </section>
     </main>
