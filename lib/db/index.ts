@@ -21,10 +21,11 @@ export class DatabaseUnavailableError extends Error {
  * Standard er en lokal SQLite-fil (data/apply.db). Det fungerer lokalt, men
  * ikke på hosting med skrivebeskyttet filsystem (f.eks. Vercel). Der må
  * DATABASE_URL peke på en libsql://-database (f.eks. Turso) med
- * DATABASE_AUTH_TOKEN. Migrasjoner i ./drizzle kjøres automatisk.
+ * DATABASE_AUTH_TOKEN. Vercels Turso-integrasjon kan i stedet bruke
+ * TURSO_DATABASE_URL og TURSO_AUTH_TOKEN. Migrasjoner i ./drizzle kjøres automatisk.
  */
-const url = process.env.DATABASE_URL ?? "file:./data/apply.db";
-const authToken = process.env.DATABASE_AUTH_TOKEN || undefined;
+const url = process.env.DATABASE_URL ?? process.env.TURSO_DATABASE_URL ?? "file:./data/apply.db";
+const authToken = process.env.DATABASE_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN || undefined;
 
 type Cache = {
   client?: Client;
@@ -76,9 +77,9 @@ async function open(): Promise<Db> {
   } catch (err) {
     if (!cache.warned) {
       cache.warned = true;
-      const hint = process.env.DATABASE_URL
+      const hint = process.env.DATABASE_URL || process.env.TURSO_DATABASE_URL
         ? ""
-        : " DATABASE_URL er ikke satt, så en lokal fil ble forsøkt. Sett DATABASE_URL og DATABASE_AUTH_TOKEN til en hostet database.";
+        : " DATABASE_URL og TURSO_DATABASE_URL er ikke satt, så en lokal fil ble forsøkt. Sett DATABASE_URL og DATABASE_AUTH_TOKEN, eller bruk Vercels Turso-integrasjon med TURSO_DATABASE_URL og TURSO_AUTH_TOKEN.";
       console.error(`[db] Kunne ikke åpne databasen.${hint}`, err);
     }
     throw new DatabaseUnavailableError(err);

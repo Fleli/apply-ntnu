@@ -42,6 +42,9 @@ påmeldinger). Felt som er tomme eller null vises ikke.
 
 **Hosting:** Sett `DATABASE_URL` til en [Turso](https://turso.tech)-database
 (`libsql://…`) og `DATABASE_AUTH_TOKEN`, så fungerer alt likt. Se `.env.example`.
+Vercels Turso-integrasjon støttes også direkte via `TURSO_DATABASE_URL` og
+`TURSO_AUTH_TOKEN`. De vanlige `DATABASE_*`-variablene har prioritet; ikke sett
+den lokale `file:`-adressen på hosting.
 
 **Endre skjemaet** i `lib/db/schema.ts`, kjør `npm run db:generate` for å lage
 en migrasjon i `drizzle/`, og commit den. Migrasjoner kjøres automatisk ved
