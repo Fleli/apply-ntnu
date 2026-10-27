@@ -9,6 +9,7 @@
     "lint": "next lint",
     "test": "tsx --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",
+    "admin:bootstrap": "tsx scripts/bootstrap-admin.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio"
@@ -16,6 +17,7 @@
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.7.14",
     "@libsql/client": "^0.18.0",
+    "@next/env": "^16.4.2",
     "better-auth": "^1.7.14",
     "drizzle-orm": "^0.45.4",
     "lucide-react": "^1.59.0",

@@ -34,6 +34,7 @@ npm run db:studio
 | `members` | Medlemskap knyttet til nye brukerkontoer; eksisterende medlemmer beholdes. | Privat profil og statistikk |
 | `auth_user`, `auth_account`, `auth_session` | Better Auth-kontoer, passordhasher og innlogginger. | Innlogging og Min side |
 | `profile_images` | Små behandlede profilbilder, bare tilgjengelig for eieren. | Min side og egen navigasjon |
+| `admin_users` | Administratortilgang og hvem som ga tilgangen. | Privat adminpanel |
 | `registrations` | Påmeldinger til arrangementer, med status `påmeldt` eller `venteliste`. | Antall påmeldte per arrangement |
 
 Tallene på `/erfaringer` regnes ut fra databasen (medlemmer, arrangementer,
@@ -80,6 +81,35 @@ bildeopplasting eller arrangementspåmelding feiler etter konto-oppretting,
 beholdes kontoen og medlemmet får en tydelig melding med mulighet for å prøve
 igjen fra Min side.
 
+## Administratorer
+
+Administratorer får en **Admin**-lenke i menyen og tilgang til `/admin`.
+Her kan de publisere nye arrangementer og finne en registrert konto med
+e-postadressen for å gi administratortilgang. Et nytt arrangement blir straks
+synlig på nettsiden og åpent for påmelding. Dato og klokkeslett gjelder norsk
+tid, og arrangementet må starte og slutte samme dag.
+
+Opprett den første administratoren fra terminalen etter at personen har
+registrert kontoen sin:
+
+```bash
+npm run admin:bootstrap -- frederik@egelund.no
+```
+
+Kommandoen bruker prosjektets vanlige miljøfiler og `DATABASE_URL` (lokalt
+`data/apply.db`). Kontroller at dette er databasen som nettstedet bruker.
+Den nekter å fortsette hvis kontoen mangler eller det allerede finnes en
+administrator. Senere administratorer legges til fra panelet. Kontoer får
+aldri administratortilgang automatisk ved registrering.
+
+Alle adminhandlinger sjekker en gyldig innlogging og gjeldende tilgang i
+databasen. Adminpanelet viser bare navn, e-post og tilgangsstatus for den
+oppsøkte kontoen. Siden e-postbekreftelse ennå ikke er satt opp, må den som
+gir tilgang kontrollere at kontoen tilhører riktig person.
+
+Redigering/sletting av arrangementer og fjerning av administratortilgang
+inngår ikke i panelet ennå.
+
 ## Kontroller
 
 ```bash
@@ -104,6 +134,8 @@ av den valgte databasen.
 | --- | --- |
 | `app/` | Én mappe per side: `hvorfor`, `slik-fungerer-det`, `arrangementer`, `erfaringer`, `om-oss`, `sporsmal`, `bli-medlem` |
 | `app/account-actions.ts` | Innlogging, registrering, privat profil, passord og autentisert påmelding |
+| `app/admin/`, `lib/admin.ts` | Beskyttet adminpanel, opprettelse av arrangementer og administratortilgang |
+| `scripts/bootstrap-admin.ts` | Operatørkommando for første administrator |
 | `app/api/profile/avatar/route.ts` | Privat bildeendepunkt som henter kun innlogget brukers bilde |
 | `components/` | Navbar, footer, sidetopp, arrangementsrad, skjema |
 | `lib/db/` | Databaseskjema, tilkobling og spørringer |
@@ -113,4 +145,3 @@ av den valgte databasen.
 ## Gjenstår
 
 - E-postintegrasjon for bekreftelse, passordgjenoppretting, kobling av eldre medlemskap og ledig plass fra ventelisten
-- Et enkelt adminpanel, hvis styret ikke vil bruke Drizzle Studio

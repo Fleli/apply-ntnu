@@ -4,13 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
-import { Menu, UserRound, X } from "lucide-react";
+import { Menu, ShieldCheck, UserRound, X } from "lucide-react";
 import { logOut } from "@/app/account-actions";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
 import { membershipPage, navPages } from "@/lib/pages";
 
-type Props = { account?: { name: string; image: string | null } | null };
+type Props = { account?: { name: string; image: string | null; isAdmin: boolean } | null };
 
 function LogoutButton({ mobile = false }: { mobile?: boolean }) {
   const { pending } = useFormStatus();
@@ -48,6 +48,7 @@ export default function Navbar({ account }: Props) {
             </li>;
           })}
           {account ? <>
+            {account.isAdmin && <li className="ml-2 flex items-center"><Link href="/admin" aria-current={isActive("/admin") ? "page" : undefined} className={`btn-ghost gap-1.5 px-2.5 py-2 text-sm ${isActive("/admin") ? "bg-brand-light text-brand" : ""}`}><ShieldCheck className="h-4 w-4" aria-hidden="true" />Admin</Link></li>}
             <li className="ml-2 flex items-center">
               <Link href="/min-side" aria-current={isActive("/min-side") ? "page" : undefined} className="btn-ghost gap-1.5 px-2.5 py-2 text-sm whitespace-nowrap">{avatar}Min side</Link>
             </li>
@@ -76,6 +77,7 @@ export default function Navbar({ account }: Props) {
             </li>;
           })}
           {account ? <>
+            {account.isAdmin && <li className="mt-2 border-t border-line pt-2"><Link href="/admin" onClick={() => setOpen(false)} aria-current={isActive("/admin") ? "page" : undefined} className={`flex items-center gap-3 rounded-md px-3 py-3 ${isActive("/admin") ? "bg-brand-light font-semibold text-brand" : "text-ink hover:bg-hover"}`}><ShieldCheck className="h-5 w-5" aria-hidden="true" />Admin</Link></li>}
             <li className="mt-2 border-t border-line pt-2"><Link href="/min-side" onClick={() => setOpen(false)} aria-current={isActive("/min-side") ? "page" : undefined} className={`flex items-center gap-3 rounded-md px-3 py-3 ${isActive("/min-side") ? "bg-brand-light font-semibold text-brand" : "text-ink hover:bg-hover"}`}>{avatar}Min side</Link></li>
             <li><form action={mobileLogout}><LogoutButton mobile /></form></li>
           </> : <>

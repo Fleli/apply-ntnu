@@ -113,6 +113,12 @@ export const users = sqliteTable("auth_user", {
   createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
 });
+/** Administrator access is never part of Better Auth's writable profile. */
+export const adminGrants = sqliteTable("admin_users", {
+  userId: text("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
+  grantedBy: text("granted_by").references(() => users.id, { onDelete: "set null" }),
+  grantedAt: integer("granted_at", { mode: "timestamp_ms" }).notNull().default(sql`(unixepoch() * 1000)`),
+});
 export const sessions = sqliteTable("auth_session", {
   id: text("id").primaryKey(),
   expiresAt: integer("expires_at", { mode: "timestamp_ms" }).notNull(),

@@ -30,6 +30,7 @@ type Cache = {
   client?: Client;
   db?: Db;
   ready?: Promise<Db>;
+  opening?: boolean;
   warned?: boolean;
   /** mtime for migrasjonsjournalen da migrasjonene sist ble kjørt (kun i utvikling) */
   journalMtime?: number;
@@ -91,13 +92,20 @@ async function open(): Promise<Db> {
  * det på nytt ved neste kall.
  */
 export function ensureDb(): Promise<Db> {
-  if (cache.ready && journalChanged()) cache.ready = undefined;
+  // Concurrent layout/page reads must share an unfinished migration, even when
+  // its journal timestamp has not yet been recorded or a new journal is present.
+  if (cache.ready && !cache.opening && journalChanged()) cache.ready = undefined;
   if (!cache.ready) {
+    cache.opening = true;
     const attempt = open();
     cache.ready = attempt;
-    attempt.catch(() => {
-      if (cache.ready === attempt) cache.ready = undefined;
-    });
+    attempt.then(
+      () => { cache.opening = false; },
+      () => {
+        cache.opening = false;
+        if (cache.ready === attempt) cache.ready = undefined;
+      },
+    );
   }
   return cache.ready;
 }

@@ -1,18 +1,19 @@
 import { and, asc, eq, sql } from "drizzle-orm";
 import { createAuth, getAuth, normalizeProfile } from "./auth";
 import { ensureDb, type Db } from "./db";
-import { events, members, profileImages, registrations, users, type RegistrationStatus } from "./db/schema";
+import { adminGrants, events, members, profileImages, registrations, users, type RegistrationStatus } from "./db/schema";
 import { todayInOslo } from "./dates";
 
-export type Account = { id: string; name: string; email: string; phone: string | null; image: string | null };
+export type Account = { id: string; name: string; email: string; phone: string | null; image: string | null; isAdmin: boolean };
 export function createAccountService(db: Db, auth: ReturnType<typeof createAuth>) {
   async function getAccount(headers: Headers): Promise<Account | null> {
     const session = await auth.api.getSession({ headers });
     if (!session) return null;
-    const [row] = await db.select({ id: users.id, name: users.name, email: users.email, phone: users.phone, updatedAt: profileImages.updatedAt })
+    const [row] = await db.select({ id: users.id, name: users.name, email: users.email, phone: users.phone, updatedAt: profileImages.updatedAt, adminId: adminGrants.userId })
       .from(users).innerJoin(members, eq(members.userId, users.id)).leftJoin(profileImages, eq(profileImages.userId, users.id))
+      .leftJoin(adminGrants, eq(adminGrants.userId, users.id))
       .where(eq(users.id, session.user.id)).limit(1);
-    return row ? { id: row.id, name: row.name, email: row.email, phone: row.phone, image: row.updatedAt ? `/api/profile/avatar?v=${row.updatedAt.getTime()}` : null } : null;
+    return row ? { id: row.id, name: row.name, email: row.email, phone: row.phone, image: row.updatedAt ? `/api/profile/avatar?v=${row.updatedAt.getTime()}` : null, isAdmin: row.adminId !== null } : null;
   }
   async function requireAccount(headers: Headers) {
     const account = await getAccount(headers);

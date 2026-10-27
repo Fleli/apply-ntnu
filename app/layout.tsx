@@ -30,7 +30,7 @@ export default async function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="flex min-h-screen flex-col">
-        <Navbar account={account ? { name: account.name, image: account.image } : null} />
+        <Navbar account={account ? { name: account.name, image: account.image, isAdmin: account.isAdmin } : null} />
         {children}
         <Footer />
       </body>
