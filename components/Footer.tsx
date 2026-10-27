@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import Logo from "./Logo";
 import { getSettings } from "@/lib/db/queries";
 import { membershipPage, sitePages } from "@/lib/pages";
@@ -6,51 +7,47 @@ import { membershipPage, sitePages } from "@/lib/pages";
 const links = [...sitePages, membershipPage];
 
 export default async function Footer() {
-  const s = await getSettings();
+  const settings = await getSettings();
   const contact = [
-    s.contact_email && { href: `mailto:${s.contact_email}`, label: s.contact_email },
-    s.instagram_url && { href: s.instagram_url, label: "Instagram" },
-    s.linkedin_url && { href: s.linkedin_url, label: "LinkedIn" },
-  ].filter((c): c is { href: string; label: string } => Boolean(c));
+    settings.contact_email && { href: `mailto:${settings.contact_email}`, label: settings.contact_email },
+    settings.instagram_url && { href: settings.instagram_url, label: "Instagram" },
+    settings.linkedin_url && { href: settings.linkedin_url, label: "LinkedIn" },
+  ].filter((item): item is { href: string; label: string } => Boolean(item));
 
   return (
-    <footer className="mt-auto border-t border-line">
-      <div className="container-x py-10">
-        <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+    <footer className="mt-auto bg-brand-deep text-white">
+      <div className="container-x pt-14 pb-7 lg:pt-20">
+        <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
           <div>
-            <Logo />
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-ink-soft">
-              Studentorganisasjon ved NTNU som gjør jobbsøking sosialt.
-            </p>
+            <Logo size="lg" tone="dark" />
+            <p className="heading-display mt-7 max-w-sm text-3xl sm:text-4xl">Søk sammen.<br />Kom videre.</p>
+            <p className="mt-5 max-w-xs text-sm leading-relaxed text-lavender/80">Et studentfellesskap ved NTNU som gjør jobbsøking litt enklere. Og mye mer sosialt.</p>
           </div>
-          <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-            {links.map(({ href, label }) => (
-              <li key={href}>
-                <Link href={href} className="text-ink-soft hover:text-ink">
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div className="grid gap-9 sm:grid-cols-2">
+            <div>
+              <h2 className="eyebrow text-lilac">Utforsk</h2>
+              <ul className="mt-5 space-y-3 text-sm">
+                {links.map(({ href, label }) => (
+                  <li key={href}><Link href={href} className="font-semibold text-lavender hover:text-white hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lilac">{label}</Link></li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h2 className="eyebrow text-lilac">Bli med</h2>
+              <p className="mt-5 max-w-xs text-sm leading-relaxed text-lavender/80">Alle studieprogram. Ingen kontingent. Bare møt opp som du er.</p>
+              <Link href="/bli-medlem" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-white hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lilac">Bli medlem <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
+              {contact.length > 0 && <ul className="mt-8 space-y-3 text-sm">
+                {contact.map(({ href, label }) => <li key={href}>
+                  <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noreferrer" : undefined}
+                    className="break-words font-semibold text-lavender hover:text-white hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lilac">{label}</a>
+                </li>)}
+              </ul>}
+            </div>
+          </div>
         </div>
-
-        <div className="mt-8 flex flex-col gap-2 border-t border-line pt-5 text-xs text-ink-faint sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Apply NTNU · Trondheim</p>
-          {contact.length > 0 && (
-            <p className="flex flex-wrap gap-x-4">
-              {contact.map(({ href, label }) => (
-                <a
-                  key={href}
-                  href={href}
-                  target={href.startsWith("http") ? "_blank" : undefined}
-                  rel={href.startsWith("http") ? "noreferrer" : undefined}
-                  className="hover:text-ink"
-                >
-                  {label}
-                </a>
-              ))}
-            </p>
-          )}
+        <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-white/15 pt-6 text-xs text-lavender/70 lg:mt-16">
+          <p>© {new Date().getFullYear()} Apply NTNU</p>
+          <p>For studenter, av studenter · Trondheim</p>
         </div>
       </div>
     </footer>

@@ -17,7 +17,7 @@ export default async function AdminPage({ searchParams }: Props) {
   const account = await getAccount(new Headers(await headers()));
   if (!account) redirect("/logg-inn");
   if (!account.isAdmin) return (
-    <main className="flex-1">
+    <main id="main-content" className="flex-1">
       <PageHeader title="Ingen administratortilgang" lead="Denne siden er for administratorer. Kontakt en eksisterende administrator hvis du trenger tilgang." />
       <div className="container-x py-12"><Link href="/min-side" className="btn-outline">Til Min side</Link></div>
     </main>
@@ -26,7 +26,7 @@ export default async function AdminPage({ searchParams }: Props) {
   const { created } = await searchParams;
   const published = typeof created === "string" ? upcoming.find((event) => event.slug === created) : undefined;
   return (
-    <main className="flex-1">
+    <main id="main-content" className="flex-1">
       <PageHeader title="Admin" lead="Samle flere rundt bordet. Opprett arrangementer og gi andre i teamet tilgang til å hjelpe til." />
       <div className="container-x space-y-8 py-10 lg:py-14">
         {published && <div role="status" className="card border-brand/20 bg-brand-light p-5 text-brand">

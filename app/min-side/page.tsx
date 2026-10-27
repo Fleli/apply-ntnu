@@ -38,7 +38,7 @@ export default async function AccountPage({ searchParams }: Props) {
   const notice = status ? notices[status] : undefined;
 
   return (
-    <main className="flex-1">
+    <main id="main-content" className="flex-1">
       <PageHeader title="Min side" lead={`Hei, ${account.name}. Her finner du profilen din og arrangementene dine.`} />
       <div className="container-x space-y-12 py-14 lg:py-20">
         {notice && <p role="status" className="card bg-surface p-5 text-ink">{notice}</p>}

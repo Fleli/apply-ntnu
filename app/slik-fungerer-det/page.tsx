@@ -45,22 +45,22 @@ const bring = [
 
 export default function SlikFungererDetPage() {
   return (
-    <main className="flex-1">
+    <main id="main-content" className="flex-1">
       <PageHeader
         title="Fra «jeg burde søke» til «søknad sendt» på én kveld"
         lead="Vi har gjort det så enkelt som mulig. Fire steg, ett fast tidspunkt og null krav til forkunnskaper."
       />
 
       <section className="border-b border-line">
-        <div className="container-x py-14 lg:py-20">
-          <ol className="grid gap-10 sm:grid-cols-2">
+        <div className="container-x py-16 lg:py-24">
+          <ol className="grid gap-x-14 gap-y-12 sm:grid-cols-2">
             {steps.map(({ title, text }, i) => (
-              <li key={title}>
-                <p className="text-4xl font-bold tabular-nums text-brand">
+              <li key={title} className="relative border-t border-line pt-8">
+                <p aria-hidden="true" className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-brand text-3xl font-black tabular-nums tracking-tight text-brand">
                   {String(i + 1).padStart(2, "0")}
                 </p>
-                <h2 className="mt-3 text-lg font-semibold text-ink">{title}</h2>
-                <p className="mt-2 max-w-md leading-relaxed text-ink-soft">
+                <h2 className="mt-6 text-2xl font-bold tracking-tight text-ink">{title}</h2>
+                <p className="mt-3 max-w-md leading-relaxed text-ink-soft">
                   {text}
                 </p>
               </li>
@@ -69,27 +69,28 @@ export default function SlikFungererDetPage() {
         </div>
       </section>
 
-      <section>
-        <div className="container-x py-14 lg:py-20">
-          <h2 className="text-2xl font-bold tracking-tight text-ink">
+      <section className="bg-canvas">
+        <div className="container-x py-16 lg:py-24">
+          <h2 className="text-3xl font-black leading-tight tracking-[-0.045em] text-ink sm:text-4xl">
             Slik ser kvelden ut
           </h2>
-          <div className="mt-8 grid gap-12 lg:grid-cols-[3fr_2fr]">
-            <dl className="divide-y divide-line">
+          <div className="mt-10 grid items-start gap-10 lg:grid-cols-[3fr_2fr] lg:gap-16">
+            <dl className="divide-y divide-line border-t border-line">
               {schedule.map(([time, text]) => (
-                <div key={time} className="grid grid-cols-[64px_1fr] gap-4 py-3">
-                  <dt className="font-semibold tabular-nums text-brand">{time}</dt>
-                  <dd className="text-ink-soft">{text}</dd>
+                <div key={time} className="grid grid-cols-[64px_1fr] gap-4 py-5">
+                  <dt className="text-lg font-bold tabular-nums text-brand">{time}</dt>
+                  <dd className="leading-relaxed text-ink-soft">{text}</dd>
                 </div>
               ))}
             </dl>
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">
+            <div className="rounded-card bg-brand-light p-7 sm:p-9">
+              <h3 className="text-2xl font-bold tracking-tight text-ink">
                 Ta med
               </h3>
               <ul className="mt-4 divide-y divide-line">
                 {bring.map((item) => (
-                  <li key={item} className="py-3 text-ink">
+                  <li key={item} className="flex gap-3 py-3 text-ink">
+                    <span aria-hidden="true" className="text-brand">✓</span>
                     {item}
                   </li>
                 ))}

@@ -23,7 +23,7 @@ export default function EventList({ events }: { events: EventWithCount[] }) {
       <div
         role="group"
         aria-label="Filtrer arrangementer etter type"
-        className="flex gap-6 border-b border-line text-sm"
+        className="flex flex-wrap gap-2 text-sm"
       >
         {types.map((type) => {
           const active = type === filter;
@@ -33,10 +33,10 @@ export default function EventList({ events }: { events: EventWithCount[] }) {
               type="button"
               onClick={() => setFilter(type)}
               aria-pressed={active}
-              className={`-mb-px border-b-2 pb-3 font-semibold transition-colors ${
+              className={`rounded-full border px-5 py-2.5 font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${
                 active
-                  ? "border-ink text-ink"
-                  : "border-transparent text-ink-soft hover:text-ink"
+                  ? "border-brand-fill bg-brand-fill text-on-brand"
+                  : "border-line bg-surface text-ink-soft hover:border-brand hover:text-brand"
               }`}
             >
               {type}
@@ -45,7 +45,7 @@ export default function EventList({ events }: { events: EventWithCount[] }) {
         })}
       </div>
 
-      <ul className="mt-2">
+      <ul className="mt-6 space-y-4">
         {visible.map((event) => (
           <EventRow key={event.slug} event={event} />
         ))}

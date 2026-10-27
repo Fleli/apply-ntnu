@@ -42,7 +42,7 @@ export default async function BliMedlemPage({ searchParams }: Props) {
   const preselected = chosen?.slug;
 
   return (
-    <main className="flex-1">
+    <main id="main-content" className="flex-1">
       <PageHeader
         title="Bli medlem i Apply NTNU"
         lead="Gratis, uforpliktende og åpent for alle NTNU-studenter. Opprett en konto og bli med i fellesskapet."

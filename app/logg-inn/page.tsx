@@ -16,7 +16,7 @@ export default async function LoginPage({ searchParams }: Props) {
   if (await getAccount(new Headers(await headers()))) redirect(`/min-side${event ? `?arrangement=${encodeURIComponent(event.slug)}` : ""}`);
 
   return (
-    <main className="flex-1">
+    <main id="main-content" className="flex-1">
       <PageHeader title="Velkommen tilbake" lead="Logg inn for å se profilen din og melde deg på arrangementer." />
       <section className="container-x py-14 lg:py-20">
         <div className="mx-auto max-w-xl">

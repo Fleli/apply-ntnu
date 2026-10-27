@@ -28,19 +28,19 @@ export default async function ErfaringerPage() {
   ].filter((f): f is [string, string] => Array.isArray(f));
 
   return (
-    <main className="flex-1">
+    <main id="main-content" className="flex-1">
       <PageHeader
         title="Det funker faktisk"
         lead="Tall og historier fra studenter som har søkt sammen med oss."
       />
 
       {figures.length > 0 && (
-        <section className="border-b border-line">
-          <dl className="container-x grid grid-cols-2 gap-8 py-12 md:grid-cols-4">
+        <section className="border-b border-line bg-brand-light">
+          <dl className="container-x grid grid-cols-2 gap-x-6 gap-y-10 py-14 md:grid-cols-4 lg:py-20">
             {figures.map(([value, label]) => (
-              <div key={label}>
-                <dd className="text-4xl font-bold tracking-tight text-ink">{value}</dd>
-                <dt className="mt-1 text-sm text-ink-soft">{label}</dt>
+              <div key={label} className="min-w-0 border-l-2 border-brand/30 pl-5">
+                <dd className="break-words text-5xl font-black tracking-[-0.06em] text-brand sm:text-6xl">{value}</dd>
+                <dt className="mt-3 max-w-[14rem] text-sm leading-relaxed text-ink-soft">{label}</dt>
               </div>
             ))}
           </dl>
@@ -48,22 +48,23 @@ export default async function ErfaringerPage() {
       )}
 
       <section>
-        <div className="container-x py-14 lg:py-20">
+        <div className="container-x py-16 lg:py-24">
           {quotes.length > 0 ? (
-            <ul className="max-w-3xl divide-y divide-line">
+            <ul className="grid gap-6 lg:grid-cols-2">
               {quotes.map(({ id, name, meta, quote }) => (
-                <li key={id} className="py-8 first:pt-0 last:pb-0">
-                  <blockquote className="text-xl leading-relaxed text-ink sm:text-2xl">
+                <li key={id} className="flex flex-col rounded-card bg-canvas p-7 sm:p-10">
+                  <span aria-hidden="true" className="mb-3 text-6xl font-black leading-none text-brand">“</span>
+                  <blockquote className="flex-1 text-xl font-semibold leading-relaxed tracking-tight text-ink sm:text-2xl">
                     «{quote}»
                   </blockquote>
-                  <p className="mt-4 text-sm text-ink-soft">
+                  <p className="mt-8 border-t border-line pt-5 text-sm text-ink-soft">
                     <span className="font-semibold text-ink">{name}</span>, {meta}
                   </p>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="max-w-xl text-lg text-ink-soft">
+            <p className="max-w-3xl rounded-card bg-canvas p-8 text-lg leading-relaxed text-ink-soft sm:p-12">
               Vi samler inn historier fra medlemmene våre. De første kommer her
               etter semesterets første søknadskvelder.
             </p>

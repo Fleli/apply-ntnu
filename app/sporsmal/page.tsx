@@ -49,27 +49,27 @@ export default async function SporsmalPage() {
   const settings = await getSettings();
 
   return (
-    <main className="flex-1">
+    <main id="main-content" className="flex-1">
       <PageHeader
         title="Lurer du på noe?"
         lead="Her er svarene på det folk oftest spør om før de kommer første gang."
       />
 
-      <section>
-        <div className="container-x py-10 lg:py-14">
-          <div className="max-w-3xl divide-y divide-line border-b border-line">
+      <section className="bg-canvas">
+        <div className="container-x py-14 lg:py-20">
+          <div className="mx-auto max-w-4xl space-y-3">
             {faq.map(({ q, a }) => (
-              <details key={q} className="group py-4">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-semibold text-ink marker:content-none">
+              <details key={q} className="group rounded-card border border-line bg-surface open:border-brand/30 open:bg-brand-light">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 rounded-card p-6 text-lg font-bold tracking-tight text-ink marker:content-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand sm:p-7">
                   {q}
                   <span
-                    className="shrink-0 text-2xl font-light leading-none text-brand transition-transform group-open:rotate-45"
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-brand/30 text-2xl font-light leading-none text-brand transition-transform group-open:rotate-45"
                     aria-hidden="true"
                   >
                     +
                   </span>
                 </summary>
-                <p className="mt-3 max-w-2xl leading-relaxed text-ink-soft">{a}</p>
+                <p className="max-w-3xl px-6 pb-6 leading-relaxed text-ink-soft sm:px-7 sm:pb-7">{a}</p>
               </details>
             ))}
           </div>
@@ -78,7 +78,7 @@ export default async function SporsmalPage() {
             before="Fant du ikke svaret?"
             label="Send oss en e-post"
             after="eller spør oss på neste søknadskveld"
-            className="mt-6"
+            className="mx-auto mt-8 max-w-4xl"
           />
         </div>
       </section>

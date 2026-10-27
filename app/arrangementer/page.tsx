@@ -16,7 +16,7 @@ export default async function ArrangementerPage() {
   const [events, settings] = await Promise.all([listEvents(), getSettings()]);
 
   return (
-    <main className="flex-1">
+    <main id="main-content" className="flex-1">
       <PageHeader
         title="Arrangementer"
         lead="Alle søknadskvelder og workshops dette semesteret. Alt er gratis og åpent for alle NTNU-studenter – men meld deg på, så vi vet hvor mye pizza vi skal bestille."

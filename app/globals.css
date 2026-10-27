@@ -1,38 +1,34 @@
 @import "tailwindcss";
 
-/*
-  Designtokens inspirert av LinkedIn:
-  - Primærblå #0A66C2, mørkere ved hover #004182
-  - Hvit flate, tynne skillelinjer, pilleformede knapper
-  - Systemfont-stack
-*/
+/* Apply NTNU: colors sampled from the supplied brand artwork. */
 @theme {
-  --color-brand: #0a66c2;
-  --color-brand-dark: #004182;
-  --color-brand-light: #eaf3fc;
-  --color-brand-fill: #0a66c2;
-  --color-brand-fill-hover: #004182;
+  --color-brand: #4b2bd6;
+  --color-brand-dark: #3820aa;
+  --color-brand-light: #eeeaff;
+  --color-brand-fill: #4b2bd6;
+  --color-brand-fill-hover: #3820aa;
   --color-on-brand: #ffffff;
+  --color-brand-deep: #1e1450;
+  --color-lavender: #eeeaff;
+  --color-lilac: #9c88ff;
 
   --color-surface: #ffffff;
-  --color-line: #e6e6e4;
-  --color-hover: rgba(0, 0, 0, 0.05);
-  --color-readonly: rgba(0, 0, 0, 0.03);
+  --color-canvas: #faf9ff;
+  --color-line: #e0dbef;
+  --color-hover: #f2efff;
+  --color-readonly: #f5f2fc;
 
-  --color-ink: rgba(0, 0, 0, 0.9);
-  --color-ink-soft: rgba(0, 0, 0, 0.6);
-  --color-ink-faint: rgba(0, 0, 0, 0.4);
+  --color-ink: #1e1450;
+  --color-ink-soft: #51466f;
+  --color-ink-faint: #73678c;
   --color-error: var(--color-red-700);
   --color-error-strong: var(--color-red-800);
   --color-error-surface: var(--color-red-50);
   --color-error-line: var(--color-red-200);
   --color-error-focus: var(--color-red-600);
 
-  --font-sans:
-    -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    sans-serif;
-
-  --radius-card: 0.5rem;
+  --font-sans: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --radius-card: 1.125rem;
 }
 
 :root {
@@ -41,60 +37,75 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-brand: #71b7ff;
-  --color-brand-dark: #a4d1ff;
-  --color-brand-light: #172f49;
-  --color-surface: #111b29;
-  --color-line: #344257;
-  --color-hover: #223044;
-  --color-readonly: #202b3a;
-  --color-ink: #f1f5f9;
-  --color-ink-soft: #b5c2d3;
-  --color-ink-faint: #93a4b9;
+  --color-brand: #b7a7ff;
+  --color-brand-dark: #d6ccff;
+  --color-brand-light: #2a205a;
+  --color-brand-fill: #6440e8;
+  --color-brand-fill-hover: #7554ee;
+  --color-surface: #1e1450;
+  --color-canvas: #171035;
+  --color-line: #433565;
+  --color-hover: #342665;
+  --color-readonly: #281d50;
+  --color-ink: #f8f6ff;
+  --color-ink-soft: #c9bfdf;
+  --color-ink-faint: #b2a5ce;
   --color-error: #fca5a5;
   --color-error-strong: #fecaca;
-  --color-error-surface: #351e29;
-  --color-error-line: #75404b;
+  --color-error-surface: #3b1c38;
+  --color-error-line: #824557;
   --color-error-focus: #f87171;
 }
 
-/* Follow the device theme before JavaScript loads, or when it is disabled. */
+/* Device-theme fallback before JavaScript runs or when it is unavailable. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
     color-scheme: dark;
-    --color-brand: #71b7ff;
-    --color-brand-dark: #a4d1ff;
-    --color-brand-light: #172f49;
-    --color-surface: #111b29;
-    --color-line: #344257;
-    --color-hover: #223044;
-    --color-readonly: #202b3a;
-    --color-ink: #f1f5f9;
-    --color-ink-soft: #b5c2d3;
-    --color-ink-faint: #93a4b9;
+    --color-brand: #b7a7ff;
+    --color-brand-dark: #d6ccff;
+    --color-brand-light: #2a205a;
+    --color-brand-fill: #6440e8;
+    --color-brand-fill-hover: #7554ee;
+    --color-surface: #1e1450;
+    --color-canvas: #171035;
+    --color-line: #433565;
+    --color-hover: #342665;
+    --color-readonly: #281d50;
+    --color-ink: #f8f6ff;
+    --color-ink-soft: #c9bfdf;
+    --color-ink-faint: #b2a5ce;
     --color-error: #fca5a5;
     --color-error-strong: #fecaca;
-    --color-error-surface: #351e29;
-    --color-error-line: #75404b;
+    --color-error-surface: #3b1c38;
+    --color-error-line: #824557;
     --color-error-focus: #f87171;
   }
 }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
 }
 
 body {
   @apply bg-surface text-ink font-sans antialiased;
 }
 
-/* Gjenbrukbare utilities */
+::selection {
+  background: #9c88ff;
+  color: #1e1450;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
 @utility card {
   @apply rounded-card border border-line bg-surface;
 }
 
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-base font-semibold leading-none transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand;
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-3 text-base font-bold leading-tight transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand;
 }
 
 @utility btn-primary {
@@ -110,9 +121,49 @@ body {
 }
 
 @utility container-x {
-  @apply mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8;
+  @apply mx-auto w-full max-w-6xl px-5 sm:px-8 lg:px-10;
 }
 
 @utility link {
-  @apply font-semibold text-brand hover:underline;
+  @apply font-bold text-brand underline-offset-4 hover:underline;
+}
+
+@utility heading-display {
+  font-family: "Arial Black", Arial, "Helvetica Neue", sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  line-height: 1.02;
+}
+
+@utility eyebrow {
+  @apply text-xs font-bold uppercase tracking-[0.16em];
+}
+
+/* Original raster artwork is framed without editing its pixels or proportions. */
+.brand-logo {
+  position: relative;
+  display: block;
+  width: 148px;
+  height: 48px;
+  overflow: hidden;
+}
+.brand-logo-lg {
+  width: 220px;
+  height: 72px;
+}
+.brand-logo-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 181.8182%;
+  max-width: none;
+  height: auto;
+  transform: translate(-50%, -50%);
+}
+.brand-logo-auto .brand-logo-dark { display: none; }
+:root[data-theme="dark"] .brand-logo-auto .brand-logo-light { display: none; }
+:root[data-theme="dark"] .brand-logo-auto .brand-logo-dark { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .brand-logo-auto .brand-logo-light { display: none; }
+  :root:not([data-theme]) .brand-logo-auto .brand-logo-dark { display: block; }
 }
